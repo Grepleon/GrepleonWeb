@@ -1,0 +1,17 @@
+data/important/
+data/important/token
+.venv
+.idea
+# Python cache
+__pycache__
+__pycache__/
+*__pycache__
+*/__pycache__
+*.py[cod]
+*$py.class
+data/characters/ideas
+data/characters/ideas/*
+*.utilities.*
+*.utilities
+utilities.*
+utilities/
