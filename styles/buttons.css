@@ -1,0 +1,20 @@
+.button-lang {
+    margin-top: 20px;
+    padding: 0px 0px;
+    background-color: transparent;
+    color: #00ff66;
+    border: 1px solid #00ff66;
+    font: inherit;
+    cursor: pointer;
+    width: 120px;
+    height: 20px;
+    box-sizing: border-box;
+    font-size: 14px;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.button-lang:hover {
+    background-color: #00ff66;
+    color: black;
+}

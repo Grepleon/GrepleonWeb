@@ -1,20 +1,20 @@
 {
   "name": ["> Grepleon"],
   "hover-name": [">> Grepleon"],
-  "job": ["Программист"],
-  "des": ["Возможно, я умею работать с кодом"],
-  "hover-des": ["Да, я точно умею работать с кодом!"],
+  "job": ["Programmer"],
+  "des": ["Maybe I know how to code"],
+  "hover-des": ["Yep, I definitely know how to code!"],
   "base-1": [
-    "Всем привет! Я Grepleon, и мне нравится создавать различные вещи.",
-    "Я веду различные социальные сети, например,",
+    "Hi everyone! I'm Grepleon, and I enjoy creating things.",
+    "You can find me on social media, including",
     "<a href=\"https://www.youtube.com/@Grepleon\">YouTube</a>,",
     "<a href=\"https://t.me/GrepleonTg\">Telegram</a>,",
-    "также я есть на <a href=\"https://github.com/Grepleon\">GitHub</a>.",
-    "Я умею программировать на",
+    "and also on <a href=\"https://github.com/Grepleon\">GitHub</a>.",
+    "I work with",
     "<a href=\"sites/projects_on_python.html\">Python</a>,",
     "<a href=\"sites/projects_on_cpp.html\">C++</a>,",
     "<a href=\"sites/projects_on_cs.html\">C#</a>,",
-    "HTML, CSS, JS, Java.",
-    "Аммм, ну и всё... по крайней мере пока."
+    "HTML, CSS, JS, and Java.",
+    "Umm, that's about it... at least for now."
   ]
 }
