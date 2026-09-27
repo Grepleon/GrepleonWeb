@@ -17,5 +17,18 @@
     "<a href=\"sites/projects_on_cs.html\">C#</a>,",
     "HTML, CSS, JS, and Java.",
     "Umm, that's about it... at least for now."
+  ],
+  "headline-2": ["> What am I working on?"],
+  "base-2": [
+    ">> Right now, I'm building this very website.",
+    "I'm learning HTML, CSS, and JavaScript as I go.",
+    "I'm also developing a game in Python —",
+    "<a href=\"https://github.com/Grepleon/NewGovernment\">NewGovernment</a>.",
+    "Over time, I'd like to bring all, or almost all, of my projects",
+    "together on this site and explain how they work."
+  ],
+  "headline-3": ["> Get in touch"],
+  "base-3": [
+    ">> You can reach me by email at grepleon.dev@gmail.com."
   ]
 }
