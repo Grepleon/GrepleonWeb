@@ -4,9 +4,14 @@
 
 .main-body {
     color: #00ff00;
-    background-color:#113322;
+    background-color:#001300;
 }
 
 .dim {
     color: #118833
+}
+
+.my-logo {
+    width: 120px;
+    height: auto;
 }
