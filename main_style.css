@@ -3,6 +3,10 @@
 }
 
 .main-body {
-    color: white;
-    background-color: black;
+    color: #00ff00;
+    background-color:#113322;
+}
+
+.dim {
+    color: #118833
 }

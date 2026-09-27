@@ -1,13 +1,15 @@
 .page {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 2fr 3fr;
     gap: 80px;
 }
 
 .left-side {
     color: #00cc33;
+    padding: 30px
 }
 
 .right-side {
     color: #11aa22;
+    padding: 30px 0px;
 }
