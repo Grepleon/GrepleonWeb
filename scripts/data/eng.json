@@ -4,8 +4,9 @@
   "job": ["Programmer"],
   "des": ["Maybe I know how to code"],
   "hover-des": ["Yep, I definitely know how to code!"],
+  "headline-1": ["> A little about me"],
   "base-1": [
-    "Hi everyone! I'm Grepleon, and I enjoy creating things.",
+    ">> Hi everyone! I'm Grepleon, and I enjoy creating things.",
     "You can find me on social media, including",
     "<a href=\"https://www.youtube.com/@Grepleon\">YouTube</a>,",
     "<a href=\"https://t.me/GrepleonTg\">Telegram</a>,",

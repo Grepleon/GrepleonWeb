@@ -24,7 +24,7 @@ async function unhover(){
     logo.src = "res/Grepleon 2026.08 logo150.png"
 }
 
-const elements = [heading, logo]
+const elements = [logo]
 
 for (const element of elements){
     element.addEventListener("mouseenter", hover)
