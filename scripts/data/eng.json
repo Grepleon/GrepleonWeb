@@ -2,8 +2,8 @@
   "name": ["> Grepleon"],
   "hover-name": [">> Grepleon"],
   "job": ["Programmer"],
-  "des": ["Maybe I know how to code"],
-  "hover-des": ["Yep, I definitely know how to code!"],
+  "des": ["> Maybe I know how to code"],
+  "hover-des": ["> Yep, I definitely know how to code!"],
   "headline-1": ["> A little about me"],
   "base-1": [
     ">> Hi everyone! I'm Grepleon, and I enjoy creating things.",
