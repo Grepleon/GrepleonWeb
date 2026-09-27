@@ -3,32 +3,32 @@ const description = document.querySelector(".dim");
 const originalText = heading.textContent;
 const desOriginalText = description.textContent;
 const logo = document.getElementById("logo");
+const jobText = document.getElementById("job");
 const originalSrc = logo.src;
 
-function hover(){
-    heading.textContent = ">> Grepleon";
-    description.textContent = "Да, я точно умею работать с кодом!";
+async function hover(){
+    const response = await fetch("./scripts/data/" + lang + ".json");
+    const data = await response.json();
+
+    heading.textContent = data["hover-name"].join(" ");
+    description.textContent = data["hover-des"].join(" ");
     logo.src = "res/Grepleon 2026.08 logo150 -re.png"
 }
 
-function unhover(){
-    heading.textContent = originalText;
-    description.textContent = desOriginalText;
+async function unhover(){
+    const response = await fetch("./scripts/data/" + lang + ".json");
+    const data = await response.json();
+
+    heading.textContent = data["name"].join(" ");
+    description.textContent = data["des"].join(" ");
     logo.src = "res/Grepleon 2026.08 logo150.png"
 }
 
-heading.addEventListener("mouseenter", () => {
-    hover()
-});
+const elements = [heading, logo]
 
-logo.addEventListener("mouseenter", () => {
-    hover()
-});
+for (const element of elements){
+    element.addEventListener("mouseenter", hover)
+    element.addEventListener("mouseleave", unhover)
+}
 
-heading.addEventListener("mouseleave", () => {
-    unhover()
-});
-
-logo.addEventListener("mouseleave", () => {
-    unhover()
-});
+unhover()

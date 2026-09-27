@@ -1,16 +1,15 @@
-const base1 = document.getElementById("base-1");
+const names = ["job", "base-1"]
+let lang = "ru"
 
-base1.innerHTML = `
-    Всем привет! Я Grepleon, и мне нравится создавать различные вещи.
-    Я веду различные социальные сети, например,
-    <a href="https://www.youtube.com/@Grepleon">YouTube</a>,
-    <a href="https://t.me/GrepleonTg">Telegram</a>,
-    также я есть на
-    <a href="https://github.com/Grepleon">GitHub</a>.
-    Я умею программировать на
-    <a href="sites/projects_on_python.html">Python</a>,
-    <a href="sites/projects_on_cpp.html">C++</a>,
-    <a href="sites/projects_on_cs.html">C#</a>,
-    HTML, CSS, JS, Java.
-    Аммм, ну и всё... по крайней мере пока.
-`;
+async function loadTexts() {
+    const response = await fetch("./scripts/data/" + lang + ".json");
+    const data = await response.json();
+    for (const name of names){
+        const lines = data[name];
+        const text = lines.join(" ");
+
+        document.getElementById(name).innerHTML = text;
+    }
+}
+
+loadTexts();
