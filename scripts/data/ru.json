@@ -31,8 +31,8 @@
   "base-3": [
     ">> Вы можете связаться со мной, написав мне на мою почту — <a class=\"highlight\">grepleon.dev@gmail.com </a>"
   ],
-  "about": ["Обо мне"],
-  "projects": ["Проекты"],
-  "languages": ["Языки"],
-  "contacts": ["Контакты"]
+  "nav-about": ["Обо мне"],
+  "nav-projects": ["Проекты"],
+  "nav-languages": ["Языки"],
+  "nav-contacts": ["Контакты"]
 }

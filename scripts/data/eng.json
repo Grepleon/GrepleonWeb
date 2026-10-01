@@ -31,8 +31,8 @@
   "base-3": [
     ">> You can reach me by email at <a class=\"highlight\"> grepleon.dev@gmail.com</a>."
   ],
-  "about": ["About me"],
-  "projects": ["Projects"],
-  "languages": ["Languages"],
-  "contacts": ["Contacts"]
+  "nav-about": ["About me"],
+  "nav-projects": ["Projects"],
+  "nav-languages": ["Languages"],
+  "nav-contacts": ["Contacts"]
 }

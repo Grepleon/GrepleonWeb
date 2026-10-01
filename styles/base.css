@@ -5,3 +5,12 @@ a {
 body {
     font-family: Courier New;
 }
+
+html {
+    scroll-behavior: smooth;
+}
+
+section {
+    scroll-margin-top: 80px;
+    min-height: 500px;
+}

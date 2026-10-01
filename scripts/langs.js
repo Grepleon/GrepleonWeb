@@ -6,10 +6,10 @@ const names = [
     "headline-2",
     "base-3",
     "headline-3",
-    "about",
-    "projects",
-    "languages",
-    "contacts",
+    "nav-about",
+    "nav-projects",
+    "nav-languages",
+    "nav-contacts",
 ]
 
 let lang = "eng"
