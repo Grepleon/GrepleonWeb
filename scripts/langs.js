@@ -1,4 +1,17 @@
-const names = ["job", "base-1", "headline-1", "base-2", "headline-2", "base-3", "headline-3"]
+const names = [
+    "job",
+    "base-1",
+    "headline-1",
+    "base-2",
+    "headline-2",
+    "base-3",
+    "headline-3",
+    "about",
+    "projects",
+    "languages",
+    "contacts",
+]
+
 let lang = "eng"
 
 async function loadTexts() {

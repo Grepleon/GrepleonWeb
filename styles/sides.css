@@ -2,10 +2,19 @@
     display: grid;
     grid-template-columns: 2fr 3fr;
     gap: 80px;
+    padding-top: 60px;
 }
 
 .left-side {
     color: #00cc33;
+
+    position: sticky;
+    top: 30px;
+    align-self: start;
+
+    /* чтобы левая часть не была выше экрана */
+    max-height: calc(100vh - 60px);
+
     padding: 30px 150px
 }
 

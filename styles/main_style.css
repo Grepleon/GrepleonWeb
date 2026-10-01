@@ -26,3 +26,33 @@
 .highlight {
     color: #bbcc33
 }
+
+.top-menu {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+    right: 0;
+
+    height: 60px;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 30px;
+    padding-right: 155px;
+
+    background-color: #001300;
+
+    z-index: 1000;
+}
+
+.top-menu a {
+    color: #22ff55;
+    text-decoration: none;
+}
+
+.top-menu a:hover {
+    color: #aaff11;
+}
