@@ -1,0 +1,13 @@
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none; /* Не мешает нажимать ссылки */
+    z-index: 0;
+
+    background: radial-gradient(
+        600px circle at var(--mouse-x, 50%) var(--mouse-y, 30%),
+        rgba(0, 255, 102, 0.08),
+        transparent 80%
+    );
+}

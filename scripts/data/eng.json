@@ -29,6 +29,6 @@
   ],
   "headline-3": ["> Get in touch"],
   "base-3": [
-    ">> You can reach me by email at grepleon.dev@gmail.com."
+    ">> You can reach me by email at <a class=\"highlight\"> grepleon.dev@gmail.com</a>."
   ]
 }
