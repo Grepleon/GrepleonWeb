@@ -34,5 +34,9 @@
   "nav-about": ["About me"],
   "nav-projects": ["Projects"],
   "nav-languages": ["Languages"],
-  "nav-contacts": ["Contacts"]
+  "nav-contacts": ["Contacts"],
+  "headline-4": ["> Projects"],
+  "base-4": [
+    ">> I have some projects"
+  ]
 }

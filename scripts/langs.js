@@ -10,6 +10,8 @@ const names = [
     "nav-projects",
     "nav-languages",
     "nav-contacts",
+    "base-4",
+    "headline-4",
 ]
 
 let lang = "eng"
