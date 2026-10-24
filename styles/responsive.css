@@ -1,0 +1,90 @@
+@media (max-width: 1024px) {
+    .page {
+        gap: 40px;
+        padding-top: 80px;
+    }
+
+    .left-side {
+        padding: 20px 40px;
+    }
+
+    .right-side {
+        padding: 20px 40px;
+    }
+
+    .top-menu {
+        padding-right: 40px;
+        gap: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    /* 1. Одна колонка вместо двух */
+    .page {
+        grid-template-columns: 1fr;
+        gap: 30px;
+        padding-top: 70px;
+    }
+
+    /* 2. Убираем sticky — на телефоне он мешает */
+    .left-side {
+        position: static;
+        max-height: none;
+        padding: 20px;
+        text-align: center;      /* логотип и имя по центру */
+    }
+
+    .right-side {
+        padding: 20px;
+    }
+
+    /* 3. Логотип крупнее — на телефоне он главный */
+    .my-logo {
+        width: 140px;
+    }
+
+    /* 4. Меню: убираем гигантский отступ, центрируем */
+    .top-menu {
+        padding-right: 20px;
+        padding-left: 20px;
+        gap: 15px;
+        justify-content: center;   /* или space-around */
+        font-size: 14px;
+    }
+
+    /* 5. Кнопки языка — в ряд по центру */
+    .left-side .button-lang {
+        display: inline-block;
+        width: auto;
+        padding: 6px 14px;
+        height: auto;
+        margin: 5px 5px 0 0;
+    }
+
+    /* 6. Отступы у секций */
+    section {
+        scroll-margin-top: 70px;
+    }
+
+    /* 7. Читаемость текста */
+    body {
+        font-size: 15px;
+        line-height: 1.5;
+    }
+}
+
+@media (max-width: 480px) {
+    .top-menu {
+        gap: 10px;
+        font-size: 13px;
+    }
+
+    .left-side,
+    .right-side {
+        padding: 15px;
+    }
+
+    .base {
+        text-indent: 20px;   /* уменьшить красную строку */
+    }
+}

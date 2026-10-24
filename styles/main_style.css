@@ -56,3 +56,15 @@
 .top-menu a:hover {
     color: #aaff11;
 }
+
+#name::after { /* Замени heading на свой id, например #name или #title */
+    content: "_"; /* Или "_" */
+    margin-left: 8px;
+    animation: blink 1s step-end infinite;
+    color: currentColor; /* Наследует цвет текста (у тебя он зеленый) */
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
