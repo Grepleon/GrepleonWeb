@@ -12,6 +12,8 @@ const names = [
     "nav-contacts",
     "base-4",
     "headline-4",
+    "base-5",
+    "headline-5",
 ]
 
 let lang = "eng"
