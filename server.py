@@ -6,7 +6,7 @@ from urllib.parse import urlsplit, unquote
 ROOT = Path(__file__).resolve().parent
 
 # Всё, что можно отдавать наружу (первый сегмент пути)
-ALLOWED = {"index.html", "404.html", "styles", "scripts", "res", "projects"}
+ALLOWED = {"index.html", "404.html", "styles", "scripts", "res", "projects", "Grepleon 2026.08 logo150.png"}
 
 class Handler(SimpleHTTPRequestHandler):
     def _allowed(self):
@@ -44,9 +44,10 @@ class Handler(SimpleHTTPRequestHandler):
         super().send_error(code, message, explain)
 
 handler = partial(Handler, directory=str(ROOT))
-
-with ThreadingHTTPServer(("127.0.0.1", 8011), handler) as server:
-    print("Сайт запущен: http://127.0.0.1:8011")
+ip = "192.168.1.99"
+port = 8011
+with ThreadingHTTPServer((ip, port), handler) as server:
+    print("Сайт запущен:", "http://" + ip + ":" + str(port))
     try:
         server.serve_forever()
     except KeyboardInterrupt:

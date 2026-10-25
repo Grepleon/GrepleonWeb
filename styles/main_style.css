@@ -52,6 +52,12 @@
     image-rendering: pixelated;
 }
 
+#main-logo {
+    width: 50px;
+    height: auto;
+    image-rendering: pixelated;
+}
+
 .base {
     max-width: 70ch;
     text-align: left;
@@ -96,4 +102,51 @@
 
 @media (prefers-reduced-motion: reduce) {
     #name::after { animation: none; }
+}
+
+.site-footer {
+  margin-top: 60px;
+  padding: 24px 0;
+  border-top: 1px solid rgba(0, 255, 70, 0.25);
+  text-align: center;
+  font-family: inherit;
+  font-size: 0.9rem;
+  color: #19b440;
+}
+
+.site-footer p {
+  margin: 0 0 12px;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+}
+
+.footer-links a {
+  color: #1aff5a;
+  text-decoration: none;
+}
+
+.footer-links a::before {
+  content: "<a> ";
+}
+
+.footer-links a::after {
+  content: " </a>";
+}
+
+.footer-links a:hover {
+  text-shadow: 0 0 8px #1aff5a;
+}
+
+#nav-main {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: auto;
+    font-weight: bold;
+    text-shadow: 0 0 8px rgba(34, 255, 85, 0.35);
 }
