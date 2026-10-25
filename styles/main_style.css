@@ -150,3 +150,9 @@
     font-weight: bold;
     text-shadow: 0 0 8px rgba(34, 255, 85, 0.35);
 }
+
+#main-logo {
+    height: 40px;
+    width: auto;
+    image-rendering: pixelated;
+}
