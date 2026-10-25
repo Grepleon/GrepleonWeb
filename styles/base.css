@@ -21,7 +21,7 @@ section {
 
 /* Выделение для ссылок — инвертируем цвета */
 a::selection {
-    background: #ffb000;
+    background: #00ffbb;
     color: #000;
 }
 
