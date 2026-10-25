@@ -16,8 +16,8 @@ handler = partial(SimpleHTTPRequestHandler, directory=str(ROOT))
 
 ip = "127.0.0.1"
 
-with ThreadingHTTPServer(("192.168.1.99", 8011), handler) as server:
-    print("Сайт запущен: http://localhost:8011")
+with ThreadingHTTPServer((ip, 8011), handler) as server:
+    print(f"Сайт запущен: http://{ip}:8011")
 
     try:
         server.serve_forever()

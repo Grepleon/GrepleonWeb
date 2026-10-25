@@ -16,7 +16,7 @@ const names = [
     "headline-5",
 ]
 
-let lang = "eng"
+let lang = "ru"
 
 async function loadTexts() {
     const response = await fetch("./scripts/data/" + lang + ".json");
