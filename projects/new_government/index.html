@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <title>NewGovernment - Grepleon</title>
+    <meta name="description" content="NewGovernment - стратегическая игра на Python от Grepleon.">
+
+    <link rel="stylesheet" href="../../styles/main_style.css">
+    <link rel="stylesheet" href="../../styles/sides.css">
+    <link rel="stylesheet" href="../../styles/base.css">
+    <link rel="stylesheet" href="../../styles/buttons.css">
+    <link rel="stylesheet" href="../../styles/fon.css">
+    <link rel="stylesheet" href="../../styles/responsive.css">
+
+    <link rel="icon" type="image/png" href="../../res/Grepleon%202026.08%20logo-circle.png">
+
+    <style>
+        #logo-ng {
+            -webkit-mask-image: url("res/PICTUREINTOMAINMENU.png");
+            mask-image: url("res/PICTUREINTOMAINMENU.png");
+            mask-mode: luminance;
+            mask-size: 100% 100%;
+            margin: -40px 0;
+        }
+    </style>
+</head>
+<body class="main-body">
+    <nav class="top-menu">
+        <a id="nav-main" href="../../index.html">
+            <img id="main-logo" src="../../res/Grepleon%202026.08%20logo-circle.png" alt="">
+            <span>Grepleon</span>
+        </a>
+        <a href="../../index.html#about">Обо мне</a>
+        <a href="../../index.html#projects">Проекты</a>
+        <a href="../../index.html#languages">Языки</a>
+        <a href="../../index.html#contacts">Контакты</a>
+    </nav>
+
+    <div class="page">
+        <div class="left-side">
+            <section id="main">
+                <h1 class="main-color" id="name">> NewGovernment</h1>
+            </section>
+            <img id="logo-ng" class="game-logo" src="res/PICTUREINTOMAINMENU.png" alt="logo-ng">
+            <h3 id="job">Игра на Python</h3>
+            <p class="dim" id="des">> Стратегия, в которой вы управляете государством.</p>
+
+            <a class="button-big" href="../../index.html#projects" style="display:inline-block; text-decoration:none; text-align:center;">&lt; Назад к проектам</a>
+        </div>
+
+        <div class="right-side">
+            <section id="about">
+                <h3 class="main-color">> О проекте</h3>
+                <p class="base">&gt;&gt; NewGovernment - моя игра на Python в жанре стратегии с политической тематикой. Проект ещё в разработке.</p>
+                <p class="base">&gt;&gt;
+                    Действие происходит в вымышленном будущем.
+                    Игрок выбирает одного из множества политиков вымышленного государства "Великая Земля".
+                    Принимая различные решения, он будет так или иначе продвигать собственные законы,
+                    свою партию в парламент.
+                    И как следствие, делая страну всё более демократичной и свободной — что в этой игре
+                    является главной целью.
+                    Сделать страну снова свободной!
+                </p>
+            </section>
+
+            <section id="tech">
+                <h3 class="main-color">> Технологии</h3>
+                <p class="base">&gt;&gt; Python. Используются tkinter, обернутый в собственный класс display.</p>
+            </section>
+
+            <section id="status">
+                <h3 class="main-color">> Статус</h3>
+                <p class="base">&gt;&gt;
+                    В разработке. Уже реализованы: политики, параметры этих же политиков,
+                    государства, области, города,
+                    основная часть данных, ресурсы, решения
+                    и многое, многое другое
+                </p>
+            </section>
+
+            <section id="links">
+                <h3 class="main-color">> Ссылки</h3>
+                <p class="base">&gt;&gt; <a href="https://github.com/Grepleon/NewGovernment">Исходный код на GitHub</a></p>
+            </section>
+        </div>
+    </div>
+
+    <h2 class="main-color" id="work" style="text-align:center"> &lta&gt Результат (и скрины) &lt/a&gt </h2>
+    <div class="page">
+        <div class="left-side-stat">
+            <h3 class="main-color"> > Начальное меню </h3>
+            <img id="screen-1" class="screen" src="res/1.png" alt="logo-ng">
+        </div>
+        <div class="right-side">
+            <h3 class="main-color"> > Начало работы</h3>
+            <p class="base">
+                >> Запуск игры начинается с начального меню, где изображен логотип проекта.
+                Игрок может нажав на кнопку "Начать" перейти в следующее меню.
+            </p>
+        </div>
+    </div>
+
+    <div class="page">
+        <div class="left-side-stat">
+            <h3 class="main-color"> > Меню выбора персонажа </h3>
+            <img id="screen-2" class="screen" src="res/2.png" alt="logo-ng">
+            <h3 class="main-color"> > Святослав Волков </h3>
+            <img id="screen-3" class="screen" src="res/3.png" alt="logo-ng">
+        </div>
+        <div class="right-side">
+            <h3 class="main-color"> > Выбор персонажа </h3>
+            <p class="base">
+                >> Перейдя из начального меню, игрок может выбрать одного из представленных политиков,
+                например, Святослава Волкова. Конкретно Святослав - социал-либерал, министр обороны,
+                по национальности великоземец, состоящий в оппозиционной партии "Величие".
+            </p>
+            <p class="base">
+                >> Если же игрок и вовсе не выберет ни одного из предложенных политиков, то по умолчанию
+                выберется политик NULL, обладающий исключительно нулевыми параметрами, потому лучше выбрать
+                хоть кого-то, чем никого.
+            </p>
+        </div>
+    </div>
+
+    <div class="page">
+        <div class="left-side-stat">
+            <h3 class="main-color"> > Игровое меню </h3>
+            <img id="screen-4" class="screen" src="res/5.png" alt="logo-ng">
+            <h3 class="main-color"> > Политическая карта </h3>
+            <img id="screen-5" class="screen" src="res/6.png" alt="logo-ng">
+            <h3 class="main-color"> > Решения </h3>
+            <img id="screen-6" class="screen" src="res/7.png" alt="logo-ng">
+        </div>
+        <div class="right-side">
+            <h3 class="main-color"> > Сама игра </h3>
+            <p class="base">
+                >> Запустив саму игру, перед пользователем появляется целый ряд возможностей. Во-первых, он может
+                изменить карту: по умолчанию стоит областная карта, однако можно изменить, например, на политическую
+                (отображаются государства), карту ресурсов, физическую карту, демографическую карту, этническую карту
+                и прочее. Выбирая этническую карту, перед игроком появляется целый список всех этносов и
+                возможность отобразить карту расселения конкретного этноса, например, великоземцев.
+                Похожим механизмом обладает карта ресурсов.
+            </p>
+            <p class="base">
+                >> Также пользователь может запустить ход времени с шагом в 15 игровых минут / 1 реальную секунду,
+                нажав на счётчик времени (верхний правый угол). По достижению нового года программа автоматически
+                запустит событие, поздравляющее с новым годом. Также ровно каждый месяц в случае, если игрок жив
+                и находится на свободе, программа в автоматическом порядке зачислит ему его месячную зарплату.
+            </p>
+            <p class="base">
+                >> Игрок также может нажать на любой из представленных отделов решения, допустим, отдел популярности.
+                Ему на выбор будет представлено более десятка решений, позволяющих стать более популярным
+                у конкретной группы людей, какого-то региона или сразу у всех. Однако важно учесть тот факт,
+                что любое решение стоит фиксированное число политических часов,
+                восполняемых раз в месяц до значения, равного 300 политических часов.
+                К примеру приведу решение "выступить с речью". В случае если пользователь решит воспользоваться
+                данным решением, стоящим 15 полит. часам, то к его популярности добавится от пяти
+                до десяти процентов популярности. Но только если у него будет хватать числа
+                политических часов, разумеется.
+                Также имеются среди решений этого отдела: "молодёжная акция". В том сценарии, где игрок
+                решит использовать это решение при том условии, что ему хватает политических часов, его популярность
+                сильно вырастит среди молодого населения
+            </p>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <p>© 2026 Grepleon</p>
+        <nav class="footer-links">
+            <a href="https://github.com/Grepleon">GitHub</a>
+            <a href="https://codeberg.org/Grepleon">Codeberg</a>
+            <a href="https://youtube.com/@Grepleon">YouTube</a>
+            <a href="https://t.me/GrepleonTg">Telegram</a>
+        </nav>
+    </footer>
+</body>
+</html>
