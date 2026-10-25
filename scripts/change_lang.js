@@ -1,5 +1,7 @@
 const russianButton = document.getElementById("button-ru");
-const englishButton = document.getElementById("button-eng");
+const englishButton = document.getElementById("button-en");
+
+const buttonLangs = [russianButton, englishButton];
 
 async function changeLanguage(newLang) {
     lang = newLang;
@@ -10,10 +12,26 @@ async function changeLanguage(newLang) {
     document.documentElement.lang = lang;
 }
 
-russianButton.addEventListener("click", () => {
-    changeLanguage("ru");
+// заменяет второй символ у кнопки
+function setMarker(btn, marker) {
+    const t = btn.textContent;
+    btn.textContent = t.slice(0, 1) + marker + t.slice(2);
+}
+
+function reset() {
+    for (const btn of buttonLangs) {
+        setMarker(btn, " ");
+    }
+}
+
+russianButton.addEventListener("click", async () => {
+    reset();
+    setMarker(russianButton, ">");
+    await changeLanguage("ru");
 });
 
-englishButton.addEventListener("click", () => {
-    changeLanguage("eng");
+englishButton.addEventListener("click", async () => {
+    reset();
+    setMarker(englishButton, ">");
+    await changeLanguage("en");
 });
