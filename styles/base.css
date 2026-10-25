@@ -21,6 +21,12 @@ section {
 
 /* Выделение для ссылок — инвертируем цвета */
 a::selection {
-    background: #40aa40;
+    background: #ffb000;
     color: #000;
+}
+
+#des { text-wrap: balance; }
+
+#name {
+    white-space: nowrap;
 }

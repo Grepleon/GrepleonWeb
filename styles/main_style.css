@@ -1,70 +1,99 @@
-.main-color {
-    color: #22ff55
+:root {
+    --bg: #001300;
+    --text: #9be8ad;
+    --bright: #22ff55;
+    --dim: #3da556;
+    --link: #ffb000;
 }
 
 .main-body {
-    color: #00ff00;
-    background-color:#001300;
+    color: var(--text);
+    background-color: var(--bg);
+    font-family: "JetBrains Mono", "IBM Plex Mono", monospace;
+    font-size: 16.5px;
+    line-height: 1.65;
 }
 
-.dim {
-    color: #118833
+.main-color {
+    color: var(--bright);
+    text-shadow: 0 0 8px rgba(34, 255, 85, 0.35);
+}
+
+.dim { color: var(--dim); }
+
+.highlight { color: var(--link); }
+
+::selection { background: var(--bright); color: var(--bg); }
+
+:root {
+    --link: #00ffbb;
+    --bg: #001300;
+}
+
+.base a {
+    color: var(--link);
+    text-decoration: underline dotted;
+    text-underline-offset: 0.25em;
+    text-decoration-thickness: 1px;
+    transition: background-color 0.15s, color 0.15s;
+}
+
+.base a:hover,
+.base a:focus-visible {
+    background-color: var(--link);
+    color: var(--bg);
+    text-decoration: none;
+    outline: none;
 }
 
 .my-logo {
     width: 120px;
     height: auto;
+    image-rendering: pixelated;
 }
 
 .base {
-    margin-left: 0;
-    padding-left: 0;
-    text-indent: 30px;
+    max-width: 70ch;
     text-align: left;
 }
 
-.highlight {
-    color: #bbcc33
+.base p {
+    margin: 0 0 1.2em;
+    padding-left: 3ch;
+    text-indent: -3ch;
 }
 
 .top-menu {
     position: fixed;
-
     top: 0;
     left: 0;
     right: 0;
-
     height: 60px;
-
     display: flex;
     align-items: center;
     justify-content: flex-end;
-
     gap: 30px;
-    padding-right: 155px;
-
-    background-color: #001300;
-
+    padding: 0 clamp(16px, 5vw, 80px);
+    background-color: var(--bg);
+    border-bottom: 1px solid rgba(61, 165, 86, 0.3);
     z-index: 1000;
 }
 
 .top-menu a {
-    color: #22ff55;
+    color: var(--bright);
     text-decoration: none;
 }
 
-.top-menu a:hover {
-    color: #aaff11;
-}
+.top-menu a:hover { color: var(--link); }
 
-#name::after { /* Замени heading на свой id, например #name или #title */
-    content: "_"; /* Или "_" */
+#name::after {
+    content: "_";
     margin-left: 8px;
     animation: blink 1s step-end infinite;
-    color: currentColor; /* Наследует цвет текста (у тебя он зеленый) */
 }
 
-@keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
+@keyframes blink { 50% { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+    #name::after { animation: none; }
 }

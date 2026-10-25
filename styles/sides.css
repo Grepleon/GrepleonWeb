@@ -1,6 +1,6 @@
 .page {
     display: grid;
-    grid-template-columns: 2fr 3fr;
+    grid-template-columns: 2fr 5fr;
     gap: 80px;
     padding-top: 60px;
 }
