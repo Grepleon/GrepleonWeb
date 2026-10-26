@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <title>Auto-generations of planets - Grepleon</title>
+    <meta name="description" content="Auto-generations of planets - авто-генератор планет от Grepleon.">
+
+    <link rel="stylesheet" href="../../styles/main_style.css">
+    <link rel="stylesheet" href="../../styles/sides.css">
+    <link rel="stylesheet" href="../../styles/base.css">
+    <link rel="stylesheet" href="../../styles/buttons.css">
+    <link rel="stylesheet" href="../../styles/fon.css">
+    <link rel="stylesheet" href="../../styles/responsive.css">
+
+    <link rel="stylesheet" href="../zoom.css">
+    <script src="../size.js" defer> </script>
+
+    <link rel="icon" type="image/png" href="../../res/Grepleon%202026.08%20logo-circle.png">
+
+    <style>
+        #logo {
+            -webkit-mask-image:
+                url("res/planet.png"),
+                radial-gradient(circle closest-side, rgb(255 255 255 / 0.35) 98%, transparent 100%);
+            mask-image:
+                url("res/planet.png"),
+                radial-gradient(circle closest-side, rgb(255 255 255 / 0.35) 98%, transparent 100%);
+            mask-mode: luminance;
+            mask-size: 100% 100%;
+            mask-composite: add;
+            -webkit-mask-composite: source-over;
+            margin: -20px 0;
+
+        }
+    </style>
+</head>
+<body class="main-body">
+    <nav class="top-menu">
+        <a id="nav-main" href="https://grepleon.com">
+            <img id="main-logo" src="../../res/Grepleon%202026.08%20logo-circle.png" alt="">
+            <span>Grepleon</span>
+        </a>
+        <a href="../../index.html#about">Обо мне</a>
+        <a href="../../index.html#projects">Проекты</a>
+        <a href="../../index.html#languages">Языки</a>
+        <a href="../../index.html#contacts">Контакты</a>
+    </nav>
+
+    <div class="page">
+        <div class="left-side">
+            <section id="main">
+                <h1 class="main-color" id="name">> Auto-generations of planets</h1>
+            </section>
+            <img id="logo" class="game-logo" src="res/planet.png" alt="logo-ng">
+            <h3 id="job">Генератор на C++</h3>
+            <p class="dim" id="des">> Автоматическое создание картинок с красивыми планета и звездами.</p>
+
+            <a class="button-big" href="../../index.html#projects" style="display:inline-block; text-decoration:none; text-align:center;">&lt; Назад к проектам</a>
+        </div>
+
+        <div class="right-side">
+            <section id="about">
+                <h3 class="main-color">> О проекте</h3>
+                <p class="base">&gt;&gt;
+                    Auto-generations of planets (AGoP) - мой генератор планет, звёзд,
+                    чёрных дыр — различных небесных тел.
+                </p>
+                <p class="base">&gt;&gt;
+                    Всего за пару строк кода в main Вы сможете сохранить в нужный вам файл красивую планету,
+                    огромную звезду или даже чёрную дыру. Также вы можете и комбинировать: сделать на одной фотографии
+                    и звезду, и планету или сразу десяток чёрных дыр.
+                </p>
+            </section>
+
+            <section id="tech">
+                <h3 class="main-color">> Технологии</h3>
+                <p class="base">&gt;&gt; C++ для основной логики. C для сохранения результата в PNG формате.</p>
+            </section>
+
+            <section id="status">
+                <h3 class="main-color">> Статус</h3>
+                <p class="base">&gt;&gt;
+                    Основная часть проекта завершена. Остались лишь мелкие доработки.
+                </p>
+            </section>
+
+            <section id="links">
+                <h3 class="main-color">> Ссылки</h3>
+                <p class="base">&gt;&gt; <a href="https://github.com/Grepleon/Auto-generation-of-planets">Исходный код на GitHub</a></p>
+            </section>
+        </div>
+    </div>
+
+    <h2 class="main-color" id="work" style="text-align:center"> &lt;a&gt; Результаты (и скрины) &lt;/a&gt; </h2>
+    <div class="page">
+        <div class="left-side-stat">
+            <h3 class="main-color"> > Планета </h3>
+            <img id="screen-1" class="screen" src="res/planet.png" alt="logo-ng">
+        </div>
+        <div class="right-side">
+            <h3 class="main-color"> > Генерация планеты </h3>
+            <p class="base">
+                Чтобы для начала создать холст требуется создать Drawer, Camera, Scene. Относительно их троих
+                будет изображаться следующие объекты. Чтобы создать планету нужно создать класс Planet и объекту этого
+                класса вызвать методы fill, set_pose и добавить объект в сцену, через метод add. В самом конце требуется
+                отрендорить изображение благодаря методу render и сохранить всё в некоторый файл это через метод Save.
+            </p>
+        </div>
+    </div>
+    <div class="page">
+        <div class="left-side-stat">
+            <h3 class="main-color"> > Звезда и планеты </h3>
+            <img id="screen-2" class="screen" src="res/sun.png" alt="logo-ng">
+        </div>
+        <div class="right-side">
+            <h3 class="main-color"> > Генерация звезды </h3>
+            <p class="base">
+                Помимо планет можно добавить звезду - Sun. Она наследуется от Planet, потому у неё те же методы.
+                Все планеты будут освещаться относительно этой звезды (или любых других звёзд)
+            </p>
+        </div>
+    </div>
+    <div class="page">
+        <div class="left-side-stat">
+            <h3 class="main-color"> > Чёрная дыра </h3>
+            <img id="screen-3" class="screen" src="res/bh.png" alt="logo-ng">
+        </div>
+        <div class="right-side">
+            <h3 class="main-color"> > Генерация чёрных дыр </h3>
+            <p class="base">
+                По аналогии со звездой можно добавить и чёрную дыру - BlackHole.
+            </p>
+        </div>
+    </div>
+
+
+
+    <footer class="site-footer">
+        <p>© 2026 Grepleon</p>
+        <nav class="footer-links">
+            <a href="https://github.com/Grepleon">GitHub</a>
+            <a href="https://codeberg.org/Grepleon">Codeberg</a>
+            <a href="https://youtube.com/@Grepleon">YouTube</a>
+            <a href="https://t.me/GrepleonTg">Telegram</a>
+        </nav>
+    </footer>
+</body>
+</html>

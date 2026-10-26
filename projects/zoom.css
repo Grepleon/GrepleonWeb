@@ -1,0 +1,18 @@
+img.screen {
+    cursor: zoom-in;
+}
+
+.zoom-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 10, 0, 0.88);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+    z-index: 1000;
+}
+
+.zoom-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
