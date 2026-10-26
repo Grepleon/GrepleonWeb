@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>403 — Доступ запрещён</title>
+<link rel="stylesheet" href="/styles/base.css">
+<link rel="stylesheet" href="/styles/main_style.css">
+<link rel="stylesheet" href="/styles/fon.css">
+<link rel="icon" type="image/png" href="/res/Grepleon%202026.08%20logo-circle.png">
+<style>
+  body { overflow-x: hidden; }
+
+  .nf { min-height: 100vh; display: flex; flex-direction: column;
+        align-items: center; justify-content: center; text-align: center; gap: 12px; }
+  .nf h1 { font-size: clamp(4rem, 15vw, 9rem); margin: 0; }
+  .nf a  { padding: 10px 24px; border: 1px solid currentColor;
+           border-radius: 8px; text-decoration: none; }
+
+  /* ================= ГЛИТЧ ================= */
+
+  /* Шум + цветные полосы (рисуются скриптом внизу) */
+  #noise {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.12;
+    image-rendering: pixelated;
+    mix-blend-mode: screen;
+  }
+
+  /* Линии развёртки */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9998;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.25) 0 1px,
+      transparent 1px 3px
+    );
+  }
+
+  .glitch { position: relative; display: inline-block; }
+  .glitch::before,
+  .glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    inset: 0;
+    mix-blend-mode: screen;
+    clip-path: inset(0 0 100% 0);
+  }
+  .glitch::before { color: #ff4fd8; animation: glitch-a 3.2s infinite steps(1); }
+  .glitch::after  { color: #00e5ff; animation: glitch-b 2.7s infinite steps(1); }
+
+  @keyframes glitch-a {
+    0%, 86%, 100% { clip-path: inset(0 0 100% 0); transform: translate(0); }
+    87% { clip-path: inset(10% 0 60% 0); transform: translate(-8px, 0); }
+    89% { clip-path: inset(55% 0 20% 0); transform: translate(6px, 0); }
+    91% { clip-path: inset(30% 0 45% 0); transform: translate(-5px, 0); }
+    93% { clip-path: inset(75% 0 5% 0);  transform: translate(8px, 0); }
+    95% { clip-path: inset(0 0 100% 0);  transform: translate(0); }
+  }
+  @keyframes glitch-b {
+    0%, 80%, 100% { clip-path: inset(0 0 100% 0); transform: translate(0); }
+    81% { clip-path: inset(65% 0 10% 0); transform: translate(7px, 0); }
+    83% { clip-path: inset(15% 0 70% 0); transform: translate(-7px, 0); }
+    85% { clip-path: inset(40% 0 35% 0); transform: translate(5px, 0); }
+    88% { clip-path: inset(0 0 100% 0);  transform: translate(0); }
+  }
+
+  /* Логотип: резкие сдвиги и смена цвета */
+  #logo { animation: logo-glitch 4.5s infinite steps(1); }
+  @keyframes logo-glitch {
+    0%, 62%, 100% { translate: 0 0; filter: none; }
+    63% { translate: 6px 0;  filter: hue-rotate(90deg) saturate(2); }
+    64% { translate: -8px 0; filter: hue-rotate(-60deg); }
+    65% { translate: 4px 2px; filter: invert(1); }
+    66% { translate: 0 0;    filter: none; }
+    82% { translate: -5px 0; filter: hue-rotate(40deg); }
+    83% { translate: 0 0;    filter: none; }
+  }
+
+  /* Мерцание + «разрыв» экрана по горизонтали */
+  .nf { animation: flicker 4s infinite, tear 5.5s infinite steps(1); }
+  @keyframes flicker {
+    0%, 92%, 100% { opacity: 1; }
+    93% { opacity: 0.8; }
+    94% { opacity: 1; }
+    97% { opacity: 0.9; }
+  }
+  @keyframes tear {
+    0%, 90%, 100% { transform: none; }
+    91% { transform: translateX(10px) skewX(3deg); }
+    92% { transform: translateX(-8px); }
+    93% { transform: translateX(4px) skewX(-2deg); }
+    94% { transform: none; }
+  }
+
+  /* При «уменьшить анимацию» всё отключаем */
+  @media (prefers-reduced-motion: reduce) {
+    .nf, #logo,
+    .glitch::before, .glitch::after { animation: none; }
+    #noise { display: none; }
+  }
+</style>
+</head>
+<body class="main-body">
+  <main class="nf">
+    <h1 class="main-color glitch" data-text="403">403</h1>
+    <img id="logo" class="my-logo" src="/res/Grepleon%202026.08%20logo150%20-re%20-glitch.png" alt="logo-Grepleon">
+    <h3 id="nf-title">Доступ запрещён</h3>
+    <p class="dim" id="nf-text">У вас нет прав для просмотра этой страницы.</p>
+    <a href="/">На главную</a>
+  </main>
+
+  <canvas id="noise" aria-hidden="true"></canvas>
+
+  <script>
+    try {
+      const lang = localStorage.getItem('lang') || (navigator.language.startsWith('ru') ? 'ru' : 'en');
+      if (lang === 'en') {
+        document.documentElement.lang = 'en';
+        document.title = '403 — Access denied';
+        document.getElementById('nf-title').textContent = 'Access denied';
+        document.getElementById('nf-text').textContent = 'You do not have permission to view this page.';
+        document.querySelector('.nf a').textContent = 'Back to home';
+      }
+    } catch (e) {}
+  </script>
+
+  <script>
+    // Глитч-шум на Canvas: зерно + цветные полосы + редкие всплески
+    (() => {
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      const c = document.getElementById('noise');
+      const ctx = c.getContext('2d');
+      const SCALE = 3;          // размер зерна (1 — мелкое, 4 — крупное)
+      const FPS = 24;           // частота смены кадров
+      const BASE_OPACITY = 0.18;
+      const BURST_OPACITY = 0.45;
+      const COLORS = ['#ff4fd8', '#ffffff', '#1aff5a', '#00e5ff'];
+      let w, h, img, last = 0, burst = 0;
+
+      function noise(level) {
+        const d = img.data;
+        for (let i = 0; i < d.length; i += 4) {
+          const v = Math.random() * 255 * level;
+          d[i]     = v * 0.3;
+          d[i + 1] = v;
+          d[i + 2] = v * 0.3;
+          d[i + 3] = 255;
+        }
+        ctx.putImageData(img, 0, 0);
+      }
+
+      function bars(count) {
+        for (let n = 0; n < count; n++) {
+          const bh = 1 + Math.floor(Math.random() * 6);
+          const bw = Math.floor(w * (0.1 + Math.random() * 0.7));
+          const x  = Math.floor(Math.random() * (w - bw));
+          const y  = Math.floor(Math.random() * h);
+          ctx.globalAlpha = 0.35 + Math.random() * 0.5;
+          ctx.fillStyle = COLORS[Math.floor(Math.random() * COLORS.length)];
+          ctx.fillRect(x, y, bw, bh);
+        }
+        ctx.globalAlpha = 1;
+      }
+
+      function frame() {
+        // редкий всплеск: на 4–10 кадров шум и полосы усиливаются
+        if (burst === 0 && Math.random() < 0.015) burst = 4 + Math.floor(Math.random() * 7);
+
+        if (burst > 0) {
+          noise(1);
+          bars(8 + Math.floor(Math.random() * 10));
+          c.style.opacity = BURST_OPACITY;
+          burst--;
+        } else {
+          noise(0.8);
+          if (Math.random() < 0.35) bars(1 + Math.floor(Math.random() * 3));
+          c.style.opacity = BASE_OPACITY;
+        }
+      }
+
+      function resize() {
+        w = c.width  = Math.ceil(innerWidth  / SCALE);
+        h = c.height = Math.ceil(innerHeight / SCALE);
+        img = ctx.createImageData(w, h);
+        frame();
+      }
+
+      function loop(t) {
+        if (t - last > 1000 / FPS) { frame(); last = t; }
+        requestAnimationFrame(loop);
+      }
+
+      addEventListener('resize', resize);
+      resize();
+      requestAnimationFrame(loop);
+    })();
+  </script>
+</body>
+</html>

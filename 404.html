@@ -28,7 +28,7 @@
     height: 100%;
     pointer-events: none;
     z-index: 9999;
-    opacity: 0.12;            /* базовая сила шума: 0.10–0.30 */
+    opacity: 0.12;
     image-rendering: pixelated;
     mix-blend-mode: screen;
   }
@@ -47,7 +47,6 @@
     );
   }
 
-  /* Цифры 404: RGB-расслоение со «срезами» */
   .glitch { position: relative; display: inline-block; }
   .glitch::before,
   .glitch::after {
@@ -55,7 +54,7 @@
     position: absolute;
     inset: 0;
     mix-blend-mode: screen;
-    clip-path: inset(0 0 100% 0);   /* по умолчанию скрыты */
+    clip-path: inset(0 0 100% 0);
   }
   .glitch::before { color: #ff4fd8; animation: glitch-a 3.2s infinite steps(1); }
   .glitch::after  { color: #00e5ff; animation: glitch-b 2.7s infinite steps(1); }
@@ -124,7 +123,6 @@
   <canvas id="noise" aria-hidden="true"></canvas>
 
   <script>
-    // Язык: берём тот же выбор, что и на главной (если ты сохраняешь его в localStorage)
     try {
       const lang = localStorage.getItem('lang') || (navigator.language.startsWith('ru') ? 'ru' : 'en');
       if (lang === 'en') {
