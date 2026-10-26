@@ -40,6 +40,8 @@
   "base-3": [
     ">> Вы можете связаться со мной, написав мне на мою почту —",
     "<a href=\"mailto:grepleon.dev@gmail.com\">grepleon.dev@gmail.com</a>",
+    "или на другую мою почту",
+    "<a gref=\"mailto:dev@grepleon.com\">dev@grepleon.com</a>.",
     "Я всегда открыт к интересным идеям и совместным проектам — пишите, если есть что обсудить."
   ],
   "nav-about": ["Обо мне"],
