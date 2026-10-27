@@ -783,7 +783,6 @@
 #about h3:not(:first-child) {
     margin-top: 30px;
     padding-top: 18px;
-    /*border-top: 1px solid #1b2920;*/
 }
 
 @media (max-width: 600px) {
@@ -809,4 +808,27 @@
 #about h3 {
     color: #79ff9b;
     text-shadow: 0 0 8px rgb(121 255 155 / 38%);
+}
+
+#about {
+    isolation: isolate;
+    overflow: hidden;
+}
+
+#about .about-rain {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+#about > *:not(.about-rain) {
+    position: relative;
+    z-index: 1;
+}
+
+#about::before {
+    z-index: 2;
 }
