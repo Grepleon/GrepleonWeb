@@ -267,3 +267,168 @@
         transition: none;
     }
 }
+
+
+/* ===== GREPLEON: CYBER PROJECTS ===== */
+
+.projects-list {
+    gap: 20px;
+}
+
+.project-card {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+
+    border: 1px solid rgba(0, 255, 65, 0.25);
+    background:
+        linear-gradient(
+            135deg,
+            rgba(0, 255, 65, 0.055),
+            transparent 55%
+        ),
+        #001000;
+
+    transition:
+        transform 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        background-color 0.25s ease;
+}
+
+/* Декоративная сетка терминала */
+.project-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+
+    background-image:
+        linear-gradient(
+            rgba(0, 255, 65, 0.035) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(0, 255, 65, 0.035) 1px,
+            transparent 1px
+        );
+
+    background-size: 18px 18px;
+    opacity: 0.35;
+    transition: opacity 0.25s ease;
+}
+
+/* Бегущий световой блик */
+.project-card::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -120%;
+    width: 70%;
+    height: 2px;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        #00ff55,
+        #aaffbb,
+        transparent
+    );
+
+    box-shadow: 0 0 12px #00ff55;
+    pointer-events: none;
+}
+
+.project-card:hover {
+    transform: translateY(-5px) scale(1.01);
+    border-color: #00ff55;
+
+    box-shadow:
+        0 0 0 1px rgba(0, 255, 85, 0.12),
+        0 8px 30px rgba(0, 255, 65, 0.09),
+        inset 0 0 25px rgba(0, 255, 65, 0.045);
+}
+
+.project-card:hover::before {
+    opacity: 0.85;
+}
+
+.project-card:hover::after {
+    animation: project-scan 0.8s ease-out forwards;
+}
+
+@keyframes project-scan {
+    from {
+        left: -70%;
+    }
+    to {
+        left: 130%;
+    }
+}
+
+/* Название проекта */
+.project-card h4 {
+    position: relative;
+    transition:
+        color 0.2s ease,
+        text-shadow 0.2s ease;
+}
+
+.project-card h4::before {
+    content: "> ";
+    display: inline-block;
+    max-width: 0;
+    overflow: hidden;
+    vertical-align: bottom;
+    white-space: nowrap;
+
+    color: #00ff55;
+    opacity: 0;
+
+    transition:
+        max-width 0.2s ease,
+        opacity 0.2s ease;
+}
+
+.project-card:hover h4 {
+    color: #72ff91;
+    text-shadow: 0 0 12px rgba(0, 255, 85, 0.35);
+}
+
+.project-card:hover h4::before {
+    max-width: 1.5em;
+    opacity: 1;
+}
+
+/* Ссылки */
+.project-links a {
+    transition:
+        color 0.2s ease,
+        text-shadow 0.2s ease;
+}
+
+.project-links a:hover {
+    color: #ffffff;
+    text-shadow: 0 0 8px #00ff55;
+}
+
+/* Уважение к настройке уменьшения анимации */
+@media (prefers-reduced-motion: reduce) {
+    .project-card,
+    .project-card::before,
+    .project-card h4,
+    .project-card h4::before,
+    .project-links a {
+        transition: none;
+    }
+
+    .project-card:hover {
+        transform: none;
+    }
+
+    .project-card:hover::after {
+        animation: none;
+    }
+}
