@@ -686,3 +686,9 @@
     background-color: rgba(0, 255, 187, 0.25);
     box-shadow: 0 0 12px rgba(0, 255, 187, 0.25);
 }
+
+.top-menu > a:not(#nav-main):hover,
+.top-menu > a:not(#nav-main):focus-visible {
+    color: var(--bright);
+    text-shadow: 0 0 10px rgba(0, 255, 85, 0.35);
+}
