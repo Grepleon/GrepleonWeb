@@ -833,8 +833,6 @@
     z-index: 2;
 }
 
-
-/* ===== Терминал #about: цвета как у кнопок copy ===== */
 #about {
     background: #001a08;
     border: 1px solid #0a5;
@@ -842,7 +840,6 @@
     box-shadow: none;
 }
 
-/* шапка: непрозрачная, чтобы дождь не просвечивал */
 #about::before {
     background: #02240d;
     border-bottom: 1px solid #0a5;
@@ -863,8 +860,6 @@
     opacity: 1;
 }
 
-
-/* дождь только под шапкой (высота шапки 36px) */
 #about .about-rain {
     opacity: 0.5;
     clip-path: inset(36px 0 0 0);
