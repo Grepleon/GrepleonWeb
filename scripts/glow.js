@@ -26,7 +26,7 @@ document.addEventListener("pointermove", (event) => {
 
     const CHARS = '01{}[]()<>;/\\=+-*&|~#$%^_:.,'.split('');
     const CELL_W = 11, CELL_H = 22, FONT = 14;
-    const MAX_ALPHA = 0.14;   // макс. яркость символа
+    const MAX_ALPHA = 0.25;   // макс. яркость символа
     const SPAWN = 0.005;      // шанс вспышки на клетку за кадр
     const FPS = 20;
     const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
