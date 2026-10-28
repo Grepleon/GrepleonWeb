@@ -1,0 +1,96 @@
+.contact-list { margin-top: 14px; }
+
+.contact-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-family: monospace;
+  padding: 8px 12px;
+  margin: 6px 0;
+  border: 1px solid #0a5;
+  border-radius: 4px;
+  background: rgba(0, 255, 100, 0.04);
+  transition: background .2s, box-shadow .2s;
+}
+.contact-line:hover {
+  background: rgba(0, 255, 100, 0.12);
+  box-shadow: 0 0 12px rgba(0, 255, 100, 0.4);
+}
+.contact-line .prompt { color: #0f6; }
+
+/* ссылка: тусклый вариант всегда виден */
+.contact-line a {
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+  text-decoration: none;
+  color: rgba(102, 255, 221, 0.35);
+}
+
+/* яркий слой, «печатается» при наведении */
+.contact-line a::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  color: #6fd;
+  text-shadow: 0 0 8px rgba(102, 255, 221, 0.6);
+  transition: width calc(var(--len) * 45ms) steps(var(--len), end);
+}
+
+/* курсор-подчёркивание, едет синхронно с текстом */
+.contact-line a::before {
+  content: "_";
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  color: #6fd;
+  text-shadow: 0 0 8px rgba(102, 255, 221, 0.6);
+  transition: left calc(var(--len) * 45ms) steps(var(--len), end);
+}
+
+.contact-line:hover a::after,
+.contact-line:focus-within a::after {
+  width: calc(var(--len) * 1ch);
+}
+.contact-line:hover a::before,
+.contact-line:focus-within a::before {
+  left: calc(var(--len) * 1ch);
+  opacity: 1;
+  animation: blink-cursor 1s steps(1) infinite;
+}
+
+@keyframes blink-cursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* на телефонах нет hover: сразу яркий вариант */
+@media (hover: none) {
+  .contact-line a { color: #6fd; }
+  .contact-line a::after,
+  .contact-line a::before { display: none; }
+}
+
+/* кнопка копирования */
+.copy-btn {
+  margin-left: auto;
+  min-width: 78px;
+  text-align: center;
+  background: none;
+  border: 1px solid #0a5;
+  color: #0f6;
+  font-family: monospace;
+  padding: 2px 8px;
+  cursor: pointer;
+}
+.copy-btn:hover { background: rgba(0, 255, 100, 0.15); }
+.copy-btn.copied {
+  background: rgba(0, 255, 100, 0.2);
+  box-shadow: 0 0 8px rgba(0, 255, 100, 0.5);
+}

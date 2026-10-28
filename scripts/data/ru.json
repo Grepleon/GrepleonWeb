@@ -38,11 +38,11 @@
   ],
   "headline-3": ["> Связаться со мной"],
   "base-3": [
-    ">> Вы можете связаться со мной, написав мне на мою почту —",
-    "<a href=\"mailto:grepleon.dev@gmail.com\">grepleon.dev@gmail.com</a>",
-    "или на другую мою почту",
-    "<a gref=\"mailto:dev@grepleon.com\">dev@grepleon.com</a>.",
-    "Я всегда открыт к интересным идеям и совместным проектам — пишите, если есть что обсудить."
+    ">> Вы можете связаться со мной по почте. Я всегда открыт к интересным идеям и совместным проектам — пишите, если есть что обсудить.",
+    "<div class=\"contact-list\">",
+    "<div class=\"contact-line\"><span class=\"prompt\">$</span> mail --main <a href=\"mailto:dev@grepleon.com\" data-text=\"dev@grepleon.com\" style=\"--len:14\">dev@grepleon.com</a><button class=\"copy-btn\" data-mail=\"dev@grepleon.com\" data-copied=\"[copied]\">[copy]</button></div>",
+    "<div class=\"contact-line\"><span class=\"prompt\">$</span> mail --backup <a href=\"mailto:grepleon.dev@gmail.com\" data-text=\"grepleon.dev@gmail.com\" style=\"--len:22\">grepleon.dev@gmail.com</a><button class=\"copy-btn\" data-mail=\"grepleon.dev@gmail.com\" data-copied=\"[copied]\">[copy]</button></div>",
+    "</div>"
   ],
   "nav-about": ["Обо мне"],
   "nav-projects": ["Проекты"],
