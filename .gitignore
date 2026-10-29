@@ -1,6 +1,6 @@
 data/important/
 data/important/token
-.venv
+../.venv
 .idea
 # Python cache
 __pycache__

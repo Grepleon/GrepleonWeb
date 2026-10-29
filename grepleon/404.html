@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>403 — Доступ запрещён</title>
-<link rel="stylesheet" href="/styles/base.css">
-<link rel="stylesheet" href="/styles/main_style.css">
-<link rel="stylesheet" href="/styles/fon.css">
-<link rel="icon" type="image/png" href="/res/Grepleon%202026.08%20logo-circle.png">
+<title>404 — Страница не найдена</title>
+<link rel="stylesheet" href="/grepleon/styleson/styles/base.css">
+<link rel="stylesheet" href="/grepleon/styleson/styles/main_style.css">
+<link rel="stylesheet" href="/grepleon/styleson/styles/fon.css">
+<link rel="icon" type="image/png" href="/grepleon/respleon/res/Grepleon%202026.08%20logo-circle.png">
 <style>
   body { overflow-x: hidden; }
 
@@ -113,10 +113,10 @@
 </head>
 <body class="main-body">
   <main class="nf">
-    <h1 class="main-color glitch" data-text="403">403</h1>
-    <img id="logo" class="my-logo" src="/res/Grepleon%202026.08%20logo150%20-re%20-glitch.png" alt="logo-Grepleon">
-    <h3 id="nf-title">Доступ запрещён</h3>
-    <p class="dim" id="nf-text">У вас нет прав для просмотра этой страницы.</p>
+    <h1 class="main-color glitch" data-text="404">404</h1>
+    <img id="logo" class="my-logo" src="/grepleon/respleon/res/Grepleon%202026.08%20logo150%20-re%20-glitch.png" alt="logo-Grepleon">
+    <h3 id="nf-title">Страница не найдена</h3>
+    <p class="dim" id="nf-text">Возможно, ссылка устарела или в адресе опечатка.</p>
     <a href="/">На главную</a>
   </main>
 
@@ -127,9 +127,9 @@
       const lang = localStorage.getItem('lang') || (navigator.language.startsWith('ru') ? 'ru' : 'en');
       if (lang === 'en') {
         document.documentElement.lang = 'en';
-        document.title = '403 — Access denied';
-        document.getElementById('nf-title').textContent = 'Access denied';
-        document.getElementById('nf-text').textContent = 'You do not have permission to view this page.';
+        document.title = '404 — Page not found';
+        document.getElementById('nf-title').textContent = 'Page not found';
+        document.getElementById('nf-text').textContent = 'The link may be outdated or the address has a typo.';
         document.querySelector('.nf a').textContent = 'Back to home';
       }
     } catch (e) {}
