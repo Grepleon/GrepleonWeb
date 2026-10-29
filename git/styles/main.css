@@ -864,3 +864,16 @@
     opacity: 0.5;
     clip-path: inset(36px 0 0 0);
 }
+
+.icons img {
+    filter: none;
+    transition: transform 0.2s ease,
+                box-shadow 0.2s ease;
+    filter: saturate(0.85) brightness(0.95);
+
+}
+
+.icons img:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0 14px #20ff7040;
+}
