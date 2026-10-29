@@ -1,0 +1,28 @@
+.page {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.8fr);
+    gap: 80px;
+    padding-top: 60px;
+}
+
+.left-side {
+    color: #00cc33;
+    position: sticky;
+    top: 30px;
+    align-self: start;
+    max-height: calc(100vh - 60px);
+    padding: 30px 0 30px 150px;
+}
+
+.left-side-stat {
+    color: #00cc33;
+    top: 30px;
+    align-self: start;
+    max-height: calc(100vh - 60px);
+    padding: 30px 0 30px 150px;
+}
+
+.right-side {
+    color: #11aa22;
+    padding: 30px 155px;
+}

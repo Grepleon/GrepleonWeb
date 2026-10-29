@@ -1,0 +1,32 @@
+a {
+    color: #aaff11
+}
+
+body {
+    font-family: Courier New;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+section {
+    scroll-margin-top: 80px;
+}
+
+::selection {
+    background: #90ee90;
+    color: #000;
+}
+
+/* Выделение для ссылок — инвертируем цвета */
+a::selection {
+    background: #00ffbb;
+    color: #000;
+}
+
+#des { text-wrap: balance; }
+
+#name {
+    white-space: nowrap;
+}
