@@ -710,7 +710,7 @@
 }
 
 #about::before {
-    content: "dev@grepleon.com:  ~/about";
+    content: "github.com/Grepleon/Grepleon/README.md";
     position: absolute;
     top: 0;
     left: 0;
