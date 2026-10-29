@@ -13,6 +13,7 @@
 
     <script src="scripts/hover.js" defer> </script>
     <script src="scripts/glow.js" defer> </script>
+    <script src="scripts/gh-stat.js" defer> </script>
 
     <link rel="icon" type="image/png" href="res/Grepleon%202026.08%20logo-circle.png">
 </head>
@@ -113,9 +114,47 @@
         <div class="right-side">
             <h3 class="main-color" id="headline-2"> </h3>
             <p id="base-2" class="base"> </p>
-            <section id="contacts">
-                <h3 class="main-color" id="headline-3"> </h3>
-                <p id="base-3" class="base"> </p>
+            <section id="github-stats">
+                <h3 class="main-color" id="headline-3"> Статистика по GitHub</h3>
+                <section id="github-commits" class="github-stats">
+                    <div class="github-summary">
+                        <div class="github-stat">
+                            <span class="github-stat-label">Всего коммитов</span>
+                            <strong id="github-total-commits">—</strong>
+                        </div>
+
+                        <div class="github-stat">
+                            <span class="github-stat-label">Репозиториев</span>
+                            <strong id="github-repo-count">—</strong>
+                        </div>
+                    </div>
+
+                    <p id="github-status" role="status">
+                        * Инициализация сборщика...
+                    </p>
+
+                    <div class="github-table-wrapper">
+                        <table class="github-table">
+                            <thead>
+                                <tr>
+                                    <th>Репозиторий</th>
+                                    <th>Коммиты</th>
+                                </tr>
+                            </thead>
+                            <tbody id="github-repo-list">
+                                <tr>
+                                    <td colspan="2">Ожидание данных...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <button id="github-refresh" type="button" class="button">
+                        Обновить статистику
+                    </button>
+
+                    <p class="github-updated" id="github-updated"></p>
+                </section>
             </section>
             <section id="projects">
                 <h3 class="main-color" id="headline-4"> </h3>
