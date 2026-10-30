@@ -878,117 +878,16 @@
     box-shadow: 0 0 14px #20ff7040;
 }
 
-.github-stats {
-    margin: 30px auto;
-    padding: 20px;
-    color: #c9d1d9;
-    background: rgba(0, 21, 1, 0.65);
-    border: 1px solid #164d28;
-    border-radius: 8px;
-}
 
-.github-stats h2 {
-    text-align: center;
-    color: #00e676;
-}
-
-.github-summary {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
-    margin: 20px 0;
-}
-
-.github-stat {
-    flex: 1;
-    min-width: 150px;
-    padding: 18px;
-    text-align: center;
-    background: #031b0a;
-    border: 1px solid #14532d;
-    border-radius: 6px;
-}
-
-.github-stat-label {
-    display: block;
-    color: #78a889;
-    font-size: 14px;
-}
-
-.github-stat strong {
-    display: block;
-    margin-top: 10px;
-    color: #00e676;
-    font-size: 30px;
-    text-shadow: 0 0 12px #00e67630;
-}
-
-.github-table-wrapper {
-    width: 100%;
-    overflow-x: auto;
-}
-
-.github-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.github-table th,
-.github-table td {
-    padding: 10px;
-    text-align: left;
-    border-bottom: 1px solid #164d28;
-}
-
-.github-table th {
-    color: #00e676;
-}
-
-.github-table a {
-    color: #9bffb9;
-    text-decoration: none;
-}
-
-.github-table a:hover {
-    color: #00e676;
-    text-decoration: underline;
-}
-
-#github-status,
-.github-updated {
-    color: #78a889;
-    font-size: 13px;
-}
-
-#github-refresh {
-    display: block;
-    margin: 18px auto 0;
-    padding: 10px 18px;
-    color: #00e676;
-    background: #031b0a;
-    border: 1px solid #00a854;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-#github-refresh:hover {
-    background: #0a3217;
-    box-shadow: 0 0 12px #00e67630;
-}
-
-#github-refresh:disabled {
-    opacity: 0.5;
-    cursor: wait;
-}
 
 .github-panel {
-    --neon: #00f5a0;
-    --neon-soft: #00d98b;
-    --text: #a3f8dc;
-    --muted: #438b70;
-    --line: rgba(0, 245, 160, 0.25);
-    --panel: rgba(0, 24, 14, 0.88);
+    --neon: #00ff66;
+    --neon-soft: #00d95f;
+    --text: #00e6a0;
+    --muted: #008f55;
+    --turquoise: #00ffd5;
+    --line: rgba(0, 255, 102, 0.25);
+    --panel: rgba(0, 20, 7, 0.96);
 
     position: relative;
     isolation: isolate;
@@ -1020,7 +919,6 @@
     );
 }
 
-/* Заголовок */
 
 .github-header {
     display: flex;
@@ -1063,12 +961,12 @@
     color: var(--neon);
     font-size: clamp(20px, 3vw, 30px);
     line-height: 1.25;
-    text-shadow: 0 0 20px #00f5a01c;
+    text-shadow: 0 0 20px #00f5a030;
 }
 
 .github-heading p {
     margin: 0;
-    color: #8acdb3;
+    color: var(--turquoise);
     font-size: 13px;
 }
 
@@ -1088,11 +986,9 @@
 }
 
 .github-user-tag:hover {
-    background: #00f5a012;
-    box-shadow: 0 0 16px #00f5a018;
+    background: #00f5a018;
+    box-shadow: 0 0 16px #00f5a030;
 }
-
-/* Карточки */
 
 .github-summary {
     display: grid;
@@ -1117,7 +1013,7 @@
 
 .github-stat:hover {
     border-color: #00f5a080;
-    background: #00f5a010;
+    background: #00f5a018;
 }
 
 .github-stat::after {
@@ -1139,7 +1035,7 @@
     width: 52px;
     height: 52px;
     place-items: center;
-    color: var(--neon);
+    color: var(--turquoise);
     border: 1px solid var(--line);
     background: #00f5a008;
 }
@@ -1157,7 +1053,7 @@
 }
 
 .github-stat-info > span {
-    color: #a3e9d0;
+    color: var(--turquoise);
     font-size: 13px;
 }
 
@@ -1166,19 +1062,17 @@
     font-size: clamp(27px, 4vw, 38px);
     line-height: 1;
     overflow-wrap: anywhere;
-    text-shadow: 0 0 20px #00f5a025;
+    text-shadow: 0 0 20px #00f5a040;
 }
 
 .github-card-code {
     position: absolute;
     top: 9px;
     right: 10px;
-    color: #438b7050;
+    color: #008f5570;
     font-size: 9px;
     letter-spacing: 1px;
 }
-
-/* Статус сборщика */
 
 .github-status-line {
     display: flex;
@@ -1198,12 +1092,10 @@
 
 .github-status-line p {
     margin: 0;
-    color: var(--neon-soft);
+    color: var(--neon);
     font-size: 13px;
     overflow-wrap: anywhere;
 }
-
-/* Таблица */
 
 .github-table-frame {
     overflow: hidden;
@@ -1220,7 +1112,7 @@
 .github-table th {
     padding: 15px 12px;
     color: var(--neon);
-    background: #00f5a008;
+    background: #00f5a010;
     font-size: 12px;
     font-weight: 600;
     text-align: left;
@@ -1240,7 +1132,7 @@
 }
 
 .github-table tbody tr:hover td {
-    background: #00f5a009;
+    background: #00f5a010;
 }
 
 .github-table .github-rank {
@@ -1254,9 +1146,10 @@
 }
 
 .github-table .github-repo-name a {
-    color: #9fffd9;
+    color: var(--turquoise);
     text-decoration: none;
     text-underline-offset: 4px;
+    transition: color 0.2s;
 }
 
 .github-table .github-repo-name a:hover {
@@ -1278,15 +1171,13 @@
 }
 
 .github-table .github-external a {
-    color: inherit;
+    color: var(--turquoise);
     text-decoration: none;
 }
 
 .github-table .github-external a:hover {
     color: var(--neon);
 }
-
-/* Кнопка обновления */
 
 .github-actions {
     display: flex;
@@ -1313,11 +1204,12 @@
 #github-refresh svg {
     width: 20px;
     height: 20px;
+    color: var(--turquoise);
 }
 
 #github-refresh:hover:not(:disabled) {
-    background: #00f5a020;
-    box-shadow: 0 0 24px #00f5a022;
+    background: #00f5a025;
+    box-shadow: 0 0 24px #00f5a035;
     transform: translateY(-2px);
 }
 
@@ -1329,8 +1221,6 @@
     opacity: 0.5;
     cursor: wait;
 }
-
-/* Нижняя строка */
 
 .github-footer {
     display: flex;
@@ -1349,16 +1239,17 @@
     flex: 0 0 8px;
     border: 1px solid var(--neon-soft);
     border-radius: 50%;
+    box-shadow: 0 0 8px #00f5a040;
 }
 
 .github-footer-version {
     margin-left: auto;
-    color: #438b706e;
+    color: #008f5580;
     font-size: 9px;
     letter-spacing: 1px;
 }
 
-/* Адаптация под телефон */
+/* MOBILE */
 
 @media (max-width: 600px) {
     .github-panel-inner {
