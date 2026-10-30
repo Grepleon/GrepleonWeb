@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="styles/base.css">
     <link rel="stylesheet" href="styles/sides.css">
     <link rel="stylesheet" href="styles/buttons.css">
-    <!-- НОВОЕ: подключается последним, чтобы перебить старые рамки -->
     <link rel="stylesheet" href="styles/stats-extra.css">
 
     <meta name="description" content="Grepleon — статистика по git репозитоию">
@@ -96,7 +95,7 @@
                       <a href="https://github.com/Grepleon">
                         GitHub</a>, &nbsp;
                       <a href="https://codeforces.com/profile/Grepleon">
-                        codeforces</a>, &nbsp;
+                        Codeforces</a>, &nbsp;
                       <a href="https://pypi.org/user/Grepleon">
                         PyPI</a>
                     </span>
@@ -108,9 +107,6 @@
             <section id="github-stats" class="base">
                 <h3 class="main-color" id="headline-3"> Статистика по GitHub</h3>
                 <section id="github-commits" class="github-stats">
-                    <!-- ИЗМЕНЕНО: было 2 карточки, стало 9 (сетка 3×3).
-                         Первая и вторая с прежними id, их по-прежнему заполняет gh-stat.js.
-                         Остальные заполняет gh-extra.js. -->
                     <div class="github-summary">
                         <div class="github-stat">
                             <span class="github-stat-label">Всего коммитов</span>
@@ -149,7 +145,10 @@
 
                         <div class="github-stat">
                             <span class="github-stat-label">Репозиториев</span>
-                            <strong id="github-repo-count">—</strong>
+                            <span class="github-stat-value">
+                                <strong id="github-repo-count">—</strong>
+                                <span class="github-stat-extra" id="github-repo-total" title="Всего репозиториев, в которых есть участие"></span>
+                            </span>
                         </div>
 
                         <div class="github-stat">

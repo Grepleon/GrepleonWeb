@@ -112,7 +112,6 @@
     outline-offset: 3px;
 }
 
-/* ---------- языки и инструменты: плашки с названиями ---------- */
 .tech-group {
     display: block;
     max-width: 560px;
@@ -151,4 +150,16 @@
 
 @media (prefers-reduced-motion: reduce) {
     .right-side #github-refresh { transition: none; }
+}
+
+.right-side .github-stat-value {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.right-side .github-stat-extra {
+    color: #0e9a41;
+    font-size: 1.2rem;
+    font-weight: 700;
 }

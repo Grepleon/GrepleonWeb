@@ -7,7 +7,7 @@
 
     const USER = "Grepleon";
     const API = "https://api.github.com";
-    const CACHE_KEY = "gh_extra_v2";
+    const CACHE_KEY = "gh_extra_v3";
     const CACHE_TTL = 30 * 60 * 1000;   // 30 минут
     const FORCE_COOLDOWN = 60 * 1000;   // принудительное обновление не чаще раза в минуту
 
@@ -26,6 +26,8 @@
         setValue("github-forks", d.forks);
         setValue("github-followers", d.followers);
         setValue("github-langs", d.langs);
+        const total = document.getElementById("github-repo-total");
+        if (total && typeof d.repoTotal === "number") total.textContent = "(" + d.repoTotal + ")";
     }
 
     function readCache() {
@@ -43,13 +45,14 @@
     }
 
     function searchCount(query) {
-        return getJSON(API + "/search/issues?per_page=1&q=" + encodeURIComponent(query));
+        return getJSON(API + "/search/issues?per_page=100&q=" + encodeURIComponent(query));
     }
 
     async function collect() {
-        const [user, repos, prs, issues, reviewed] = await Promise.all([
+        const [user, repos, memberRepos, prs, issues, reviewed] = await Promise.all([
             getJSON(API + "/users/" + USER),
             getJSON(API + "/users/" + USER + "/repos?per_page=100"),
+            getJSON(API + "/users/" + USER + "/repos?type=member&per_page=100"),
             searchCount("author:" + USER + " type:pr"),
             searchCount("author:" + USER + " type:issue"),
             searchCount("reviewed-by:" + USER + " -author:" + USER + " type:pr"),
@@ -69,6 +72,19 @@
         }));
         const langs = new Set(langSets.flat());
 
+        // Все репозитории, где есть участие: свои, те где он участник,
+        // и те, куда он отправлял PR / issues / ревью (в том числе чужие)
+        const names = new Set();
+        const addName = (n) => { if (n) names.add(n.toLowerCase()); };
+        repos.forEach((r) => addName(r.full_name));
+        memberRepos.forEach((r) => addName(r.full_name));
+        [prs, issues, reviewed].forEach((res) => {
+            (res.items || []).forEach((it) => {
+                const m = /\/repos\/(.+)$/.exec(it.repository_url || "");
+                if (m) addName(m[1]);
+            });
+        });
+
         return {
             t: Date.now(),
             prs: prs.total_count,
@@ -78,6 +94,7 @@
             forks: own.reduce((s, r) => s + r.forks_count, 0),
             followers: user.followers,
             langs: langs.size,
+            repoTotal: names.size,
         };
     }
 

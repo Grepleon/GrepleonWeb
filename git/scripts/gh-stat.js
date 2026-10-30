@@ -1,6 +1,9 @@
-
 const GITHUB_USER = "Grepleon";
 const API = "https://api.github.com";
+
+// Кеш результата, чтобы не тратить лимит GitHub API при каждой перезагрузке страницы.
+const CACHE_KEY = "gh_stat_v2";
+const CACHE_TTL = 30 * 60 * 1000; // 30 минут
 
 const totalElement = document.getElementById("github-total-commits");
 const repoCountElement = document.getElementById("github-repo-count");
@@ -30,7 +33,7 @@ async function githubFetch(url) {
     return response;
 }
 
-// Получаем все публичные репозитории пользователя
+// Получаем все публичные репозитории, владельцем которых является пользователь
 async function getRepositories() {
     const repositories = [];
     let page = 1;
@@ -38,7 +41,7 @@ async function getRepositories() {
     while (true) {
         const response = await githubFetch(
             `${API}/users/${GITHUB_USER}/repos` +
-            `?type=public&per_page=100&page=${page}&sort=updated`
+            `?type=owner&per_page=100&page=${page}&sort=updated`
         );
 
         const data = await response.json();
@@ -48,16 +51,77 @@ async function getRepositories() {
         page++;
     }
 
-    return repositories;
+    // Приводим к единому виду. own = пользователь владелец репозитория.
+    return repositories.map((repo) => ({
+        name: repo.name,
+        fullName: repo.full_name,
+        url: repo.html_url,
+        own: true
+    }));
 }
 
-// Определяем количество коммитов в репозитории.
+// Чужие репозитории, в которые пользователь вносил коммиты:
+// 1) где он участник или соавтор;
+// 2) где приняты (merged) его pull request'ы.
+// Ошибки не прерывают сбор, а возвращаются списком.
+async function getExternalRepositories(ownRepositories) {
+    const known = new Set(
+        ownRepositories.map((repo) => repo.fullName.toLowerCase())
+    );
+    const repos = [];
+    const errors = [];
+
+    function add(fullName, url) {
+        const key = fullName.toLowerCase();
+        if (known.has(key)) return;
+        known.add(key);
+        repos.push({ name: fullName, fullName, url, own: false });
+    }
+
+    try {
+        const response = await githubFetch(
+            `${API}/users/${GITHUB_USER}/repos?type=member&per_page=100`
+        );
+        for (const repo of await response.json()) {
+            add(repo.full_name, repo.html_url);
+        }
+    } catch (error) {
+        errors.push(error);
+    }
+
+    try {
+        const query = encodeURIComponent(
+            `author:${GITHUB_USER} type:pr is:merged`
+        );
+        const response = await githubFetch(
+            `${API}/search/issues?q=${query}&per_page=100`
+        );
+        const data = await response.json();
+
+        for (const item of data.items || []) {
+            const match = /\/repos\/(.+)$/.exec(item.repository_url || "");
+            if (match) add(match[1], `https://github.com/${match[1]}`);
+        }
+    } catch (error) {
+        errors.push(error);
+    }
+
+    return { repos, errors };
+}
+
+// Определяем количество коммитов ПОЛЬЗОВАТЕЛЯ в репозитории.
+// Фильтр author оставляет только его коммиты: коммиты друга и других людей не считаются.
 // Используем последнюю страницу API с per_page=1,
 // чтобы не скачивать историю целиком.
 async function getCommitCount(repo) {
+    const path = repo.fullName
+        .split("/")
+        .map(encodeURIComponent)
+        .join("/");
+
     const url =
-        `${API}/repos/${GITHUB_USER}/${encodeURIComponent(repo.name)}` +
-        `/commits?per_page=1`;
+        `${API}/repos/${path}/commits` +
+        `?author=${encodeURIComponent(GITHUB_USER)}&per_page=1`;
 
     const response = await fetch(url, {
         headers: {
@@ -66,7 +130,14 @@ async function getCommitCount(repo) {
     });
 
     // У пустого репозитория GitHub может вернуть HTTP 409.
-    if (response.status === 409) return 0;
+    // 404 и 451: репозиторий удалён или недоступен.
+    if (
+        response.status === 409 ||
+        response.status === 404 ||
+        response.status === 451
+    ) {
+        return 0;
+    }
 
     if (response.status === 403 || response.status === 429) {
         throw new Error("Превышен лимит GitHub API.");
@@ -116,8 +187,9 @@ async function processRepositories(repositories) {
 
                 results.push({
                     name: repo.name,
-                    url: repo.html_url,
-                    commits
+                    url: repo.url,
+                    commits,
+                    own: repo.own
                 });
             } catch (error) {
                 errors.push(error);
@@ -135,8 +207,9 @@ async function processRepositories(repositories) {
     return { results, errors };
 }
 
-// Отрисовка статистики на странице
-function renderStatistics(results) {
+// Отрисовка статистики на странице.
+// ownCount: число репозиториев, где пользователь владелец.
+function renderStatistics(results, ownCount) {
     results.sort((a, b) => b.commits - a.commits);
 
     const total = results.reduce(
@@ -145,7 +218,7 @@ function renderStatistics(results) {
     );
 
     totalElement.textContent = total.toLocaleString("ru-RU");
-    repoCountElement.textContent = results.length.toLocaleString("ru-RU");
+    repoCountElement.textContent = ownCount.toLocaleString("ru-RU");
 
     listElement.replaceChildren();
 
@@ -168,21 +241,72 @@ function renderStatistics(results) {
     }
 }
 
+function readCache() {
+    try {
+        const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || "null");
+        if (cached && Date.now() - cached.t < CACHE_TTL) return cached;
+    } catch (error) {
+        // кеш недоступен, идём в сеть
+    }
+    return null;
+}
+
+function writeCache(data) {
+    try {
+        localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+    } catch (error) {
+        // хранилище недоступно
+    }
+}
+
+function showUpdated(timestamp) {
+    updatedElement.textContent =
+        "Последнее обновление: " +
+        new Date(timestamp).toLocaleString("ru-RU");
+}
+
 // Основной цикл сбора
-async function updateGitHubStatistics() {
+// force = true: игнорировать кеш (кнопка «Обновить статистику»)
+async function updateGitHubStatistics(force = false) {
+    if (!force) {
+        const cached = readCache();
+
+        if (cached) {
+            renderStatistics(cached.results, cached.ownCount);
+            showUpdated(cached.t);
+            statusElement.textContent = "* Данные из кеша.";
+            return;
+        }
+    }
+
     refreshButton.disabled = true;
     statusElement.textContent = "* Получение списка репозиториев...";
 
     try {
-        const repositories = await getRepositories();
+        const ownRepositories = await getRepositories();
 
         statusElement.textContent =
-            `* Найдено репозиториев: ${repositories.length}. Сбор коммитов...`;
+            `* Найдено своих репозиториев: ${ownRepositories.length}. ` +
+            "Поиск чужих репозиториев с вашими коммитами...";
+
+        const external = await getExternalRepositories(ownRepositories);
+        const allRepositories = [...ownRepositories, ...external.repos];
+
+        statusElement.textContent =
+            `* Репозиториев для проверки: ${allRepositories.length}. ` +
+            "Сбор коммитов...";
 
         const { results, errors } =
-            await processRepositories(repositories);
+            await processRepositories(allRepositories);
 
-        renderStatistics(results);
+        errors.push(...external.errors);
+
+        // Чужие репозитории без ваших коммитов в таблицу не попадают
+        const visible = results.filter(
+            (repo) => repo.own || repo.commits > 0
+        );
+
+        renderStatistics(visible, ownRepositories.length);
 
         if (errors.length > 0) {
             statusElement.textContent =
@@ -191,11 +315,15 @@ async function updateGitHubStatistics() {
         } else {
             statusElement.textContent =
                 "* Сбор завершён успешно.";
+            // Кешируем только полностью успешный сбор
+            writeCache({
+                t: Date.now(),
+                results: visible,
+                ownCount: ownRepositories.length
+            });
         }
 
-        updatedElement.textContent =
-            "Последнее обновление: " +
-            new Date().toLocaleString("ru-RU");
+        showUpdated(Date.now());
 
     } catch (error) {
         statusElement.textContent = `* Ошибка: ${error.message}`;
@@ -206,7 +334,7 @@ async function updateGitHubStatistics() {
 
 refreshButton.addEventListener(
     "click",
-    updateGitHubStatistics
+    () => updateGitHubStatistics(true)
 );
 
 // Первый запуск при загрузке страницы
