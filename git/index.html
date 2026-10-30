@@ -8,12 +8,16 @@
     <link rel="stylesheet" href="styles/base.css">
     <link rel="stylesheet" href="styles/sides.css">
     <link rel="stylesheet" href="styles/buttons.css">
+    <!-- НОВОЕ: подключается последним, чтобы перебить старые рамки -->
+    <link rel="stylesheet" href="styles/stats-extra.css">
 
     <meta name="description" content="Grepleon — статистика по git репозитоию">
 
     <script src="scripts/hover.js" defer> </script>
     <script src="scripts/glow.js" defer> </script>
     <script src="scripts/gh-stat.js" defer> </script>
+    <!-- НОВОЕ: считает PR, ревью, issues, звёзды, форки, подписчиков, языки -->
+    <script src="scripts/gh-extra.js" defer> </script>
 
     <link rel="icon" type="image/png" href="res/Grepleon%202026.08%20logo-circle.png">
 </head>
@@ -41,43 +45,32 @@
                         <img width="24" />
                     </span>
 
-                    <span class="icons" style="display: block; text-align: center;">
-                      <img src="https://skillicons.dev/icons?i=c" height="40" alt="C logo"  />
-                      <img width="12" />
-                      <img src="https://skillicons.dev/icons?i=cpp" height="40" alt="C++ logo"  />
-                      <img width="12" />
-                      <img src="https://skillicons.dev/icons?i=cs" height="40" alt="C# logo"  />
-                      <img width="12" />
-                      <img src="https://skillicons.dev/icons?i=py" height="40" alt="python logo"  />
-                      <img width="12" />
-                      <img src="https://skillicons.dev/icons?i=html" height="40" alt="html logo"  />
-                      <img width="12" />
-                      <img src="https://skillicons.dev/icons?i=css" height="40" alt="css logo"  />
-                      <img width="12" />
-                      <img src="https://skillicons.dev/icons?i=js" height="40" alt="js logo"  />
-                      <img width="12" />
+                    <!-- ИЗМЕНЕНО: вместо иконок плашки с названиями, в двух группах -->
+                    <span class="tech-group">
+                      <span class="tech-title">Языки</span>
+                      <span class="tech-row">
+                        <span class="chip">C</span>
+                        <span class="chip">C++</span>
+                        <span class="chip">C#</span>
+                        <span class="chip">Python</span>
+                        <span class="chip">Java</span>
+                        <span class="chip">HTML</span>
+                        <span class="chip">CSS</span>
+                        <span class="chip">JS</span>
+                      </span>
                     </span>
 
-                    <span style="display: block; text-align: center;">
-                      <img src="https://skillicons.dev/icons?i=java" height="40" alt="java logo"  />
-                      <img width="12" />
-                      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pycharm/pycharm-original.svg" height="40" alt="pycharm logo"  />
-                      <img width="12" />
-                      <img src="https://skillicons.dev/icons?i=vscode" height="40" alt="vs code logo"  />
-                      <img width="12" />
-                      <img src="https://skillicons.dev/icons?i=visualstudio" height="40" alt="visual studio logo"  />
-                      <img width="12" />
-                      <img src="https://skillicons.dev/icons?i=github" height="40" alt="github logo"  />
-                      <img width="12" />
-                    </span>
-
-                    <span style="display: block; text-align: center;">
-                      <img src="https://skillicons.dev/icons?i=git" height="40" alt="git logo"  />
-                      <img width="12" />
-                      <img src="https://skillicons.dev/icons?i=blender" height="40" alt="blender logo"  />
-                      <img width="12" />
-                      <img src="https://skillicons.dev/icons?i=powershell" height="40" alt="powershell logo"  />
-                      <img width="12" />
+                    <span class="tech-group">
+                      <span class="tech-title">Инструменты</span>
+                      <span class="tech-row">
+                        <span class="chip">PyCharm</span>
+                        <span class="chip">VS Code</span>
+                        <span class="chip">Visual Studio</span>
+                        <span class="chip">GitHub</span>
+                        <span class="chip">Git</span>
+                        <span class="chip">Blender</span>
+                        <span class="chip">PowerShell</span>
+                      </span>
                     </span>
 
                     <span style="display: block; text-align: center;">
@@ -115,6 +108,9 @@
             <section id="github-stats" class="base">
                 <h3 class="main-color" id="headline-3"> Статистика по GitHub</h3>
                 <section id="github-commits" class="github-stats">
+                    <!-- ИЗМЕНЕНО: было 2 карточки, стало 9 (сетка 3×3).
+                         Первая и вторая с прежними id, их по-прежнему заполняет gh-stat.js.
+                         Остальные заполняет gh-extra.js. -->
                     <div class="github-summary">
                         <div class="github-stat">
                             <span class="github-stat-label">Всего коммитов</span>
@@ -122,8 +118,43 @@
                         </div>
 
                         <div class="github-stat">
+                            <span class="github-stat-label">Pull requests</span>
+                            <strong id="github-prs">—</strong>
+                        </div>
+
+                        <div class="github-stat">
+                            <span class="github-stat-label">Code review</span>
+                            <strong id="github-reviews">—</strong>
+                        </div>
+
+                        <div class="github-stat">
+                            <span class="github-stat-label">Issues</span>
+                            <strong id="github-issues">—</strong>
+                        </div>
+
+                        <div class="github-stat">
+                            <span class="github-stat-label">Звёзды</span>
+                            <strong id="github-stars">—</strong>
+                        </div>
+
+                        <div class="github-stat">
+                            <span class="github-stat-label">Форки</span>
+                            <strong id="github-forks">—</strong>
+                        </div>
+
+                        <div class="github-stat">
+                            <span class="github-stat-label">Подписчики</span>
+                            <strong id="github-followers">—</strong>
+                        </div>
+
+                        <div class="github-stat">
                             <span class="github-stat-label">Репозиториев</span>
                             <strong id="github-repo-count">—</strong>
+                        </div>
+
+                        <div class="github-stat">
+                            <span class="github-stat-label">Языков</span>
+                            <strong id="github-langs">—</strong>
                         </div>
                     </div>
 

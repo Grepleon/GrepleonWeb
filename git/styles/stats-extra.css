@@ -1,0 +1,154 @@
+/* Дополнение к стилям git.grepleon.
+   Подключается ПОСЛЕ остальных css, ничего в них менять не нужно.
+   Если какое-то правило не перебивает старое, найди его в sides.css / buttons.css и удали там. */
+
+.right-side {
+    --x-border: #12b34a;      /* основная чёткая рамка */
+    --x-border-dim: #0b6b2d;  /* линии внутри таблицы */
+    --x-bright: #3dff85;
+    --x-dim: #14a84a;
+    --x-panel: rgba(0, 28, 12, 0.88);
+    --x-hover: rgba(61, 255, 133, 0.12);
+}
+
+/* ---------- карточки статистики: сетка 3×3 ---------- */
+.right-side .github-summary {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.right-side .github-stat {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 4px;
+    min-height: 88px;
+    padding: 14px 16px;
+    border: 1px solid var(--x-border);
+    border-radius: 4px;
+    background: var(--x-panel);
+    box-shadow: inset 0 0 0 1px rgba(61, 255, 133, 0.06);
+}
+
+.right-side .github-stat-label {
+    color: var(--x-dim);
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
+
+.right-side .github-stat strong {
+    color: var(--x-bright);
+    font-size: 1.8rem;
+    line-height: 1.1;
+}
+
+@media (max-width: 560px) {
+    .right-side .github-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .right-side .github-stat:last-child { grid-column: span 2; }
+}
+
+/* ---------- таблица ---------- */
+.right-side .github-table-wrapper {
+    border: 1px solid var(--x-border);
+    border-radius: 4px;
+    overflow-x: auto;
+    background: var(--x-panel);
+}
+
+.right-side .github-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.right-side .github-table th,
+.right-side .github-table td {
+    padding: 12px 16px;
+    text-align: left;
+}
+
+.right-side .github-table th:last-child,
+.right-side .github-table td:last-child {
+    width: 7rem;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.right-side .github-table th + th,
+.right-side .github-table td + td {
+    border-left: 1px solid var(--x-border-dim);
+}
+
+.right-side .github-table thead th {
+    background: rgba(61, 255, 133, 0.08);
+    border-bottom: 1px solid var(--x-border);
+    font-size: 0.85rem;
+}
+
+.right-side .github-table tbody tr + tr td {
+    border-top: 1px solid var(--x-border-dim);
+}
+
+.right-side .github-table tbody tr:hover {
+    background: var(--x-hover);
+}
+
+/* ---------- кнопка ---------- */
+.right-side #github-refresh {
+    border: 1px solid var(--x-border);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.right-side #github-refresh:hover {
+    border-color: var(--x-bright);
+    box-shadow: 0 0 8px rgba(61, 255, 133, 0.35);
+}
+
+.right-side #github-refresh:focus-visible {
+    outline: 2px solid var(--x-bright);
+    outline-offset: 3px;
+}
+
+/* ---------- языки и инструменты: плашки с названиями ---------- */
+.tech-group {
+    display: block;
+    max-width: 560px;
+    margin: 16px auto;
+    padding: 12px 16px 16px;
+    background: #001106;            /* очень тёмный зелёный */
+    border: 1px solid #0e6b2f;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.tech-title {
+    display: block;
+    margin-bottom: 10px;
+    color: #3dff85;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.tech-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+}
+
+.chip {
+    padding: 4px 10px;
+    border: 1px solid #0b6b2d;
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.35);
+    color: #19e060;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .right-side #github-refresh { transition: none; }
+}
