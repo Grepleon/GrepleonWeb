@@ -7,7 +7,7 @@
 
     const USER = "Grepleon";
     const API = "https://api.github.com";
-    const CACHE_KEY = "gh_extra_v1";
+    const CACHE_KEY = "gh_extra_v2";
     const CACHE_TTL = 30 * 60 * 1000;   // 30 минут
     const FORCE_COOLDOWN = 60 * 1000;   // принудительное обновление не чаще раза в минуту
 
@@ -57,6 +57,18 @@
 
         const own = repos.filter((r) => !r.fork);
 
+        // Все языки каждого репозитория, а не только основной.
+        // Если запрос для какого-то репозитория не удался, берём его основной язык.
+        const langSets = await Promise.all(own.map(async (r) => {
+            try {
+                const byBytes = await getJSON(API + "/repos/" + USER + "/" + r.name + "/languages");
+                return Object.keys(byBytes);
+            } catch (e) {
+                return r.language ? [r.language] : [];
+            }
+        }));
+        const langs = new Set(langSets.flat());
+
         return {
             t: Date.now(),
             prs: prs.total_count,
@@ -65,7 +77,7 @@
             stars: own.reduce((s, r) => s + r.stargazers_count, 0),
             forks: own.reduce((s, r) => s + r.forks_count, 0),
             followers: user.followers,
-            langs: new Set(own.map((r) => r.language).filter(Boolean)).size,
+            langs: langs.size,
         };
     }
 
