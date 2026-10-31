@@ -24,6 +24,7 @@
     if (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) return few;
     return many;
   }
+
   const contribWord = n => plural(n, "вклад", "вклада", "вкладов");
   const dayWord = n => plural(n, "день", "дня", "дней");
 
