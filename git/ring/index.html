@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Круговой календарь активности</title>
 
+<!-- ============ БЛОК 1: CSS (вставь в свой style) ============ -->
 <style>
 :root {
   --ring-bg: #021208;
@@ -21,8 +22,6 @@
 body {
   margin: 0;
   min-height: 100vh;
-  display: grid;
-  place-items: center;
   padding: 24px;
   box-sizing: border-box;
   background: var(--ring-bg);
@@ -30,35 +29,29 @@ body {
   font-family: "JetBrains Mono", "Fira Code", "Consolas", monospace;
 }
 
-.ring-card {
+.ring-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   width: 100%;
   max-width: 640px;
+  margin: 0 auto;
+}
+
+.ring-card {
   box-sizing: border-box;
   padding: 20px 20px 16px;
   border: 1px solid var(--ring-line);
   border-radius: 3px;
   background: rgba(2, 24, 10, 0.6);
 }
+.ring-card[hidden] { display: none; }
 
-.ring-card h2 {
-  margin: 0 0 4px;
-  font-size: 1.15rem;
-  letter-spacing: 0.02em;
-}
+.ring-card h2 { margin: 0 0 4px; font-size: 1.15rem; letter-spacing: 0.02em; }
+.ring-card .ring-sub { margin: 0 0 12px; font-size: 0.8rem; color: var(--ring-dim); }
+.ring-card svg { display: block; width: 100%; height: auto; touch-action: manipulation; }
 
-.ring-card .ring-sub {
-  margin: 0 0 12px;
-  font-size: 0.8rem;
-  color: var(--ring-dim);
-}
-
-.ring-card svg {
-  display: block;
-  width: 100%;
-  height: auto;
-  touch-action: manipulation;
-}
-
+/* ячейки */
 .ring-cell {
   stroke: none;
   cursor: crosshair;
@@ -71,27 +64,23 @@ body {
 .ring-cell.l2 { fill: var(--lv2); }
 .ring-cell.l3 { fill: var(--lv3); }
 .ring-cell.l4 { fill: var(--lv4); }
-.ring-cell:hover { stroke: var(--ring-text); stroke-width: 1.5; }
-.ring-cell.today { stroke: var(--ring-text); stroke-width: 1.5; }
+.ring-cell:hover, .ring-cell.today { stroke: var(--ring-text); stroke-width: 1.2; }
 
 @keyframes ring-in { to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) {
   .ring-cell { animation: none; opacity: 1; }
 }
 
+/* подписи внутри svg */
 .ring-month { fill: var(--ring-dim); font-size: 12px; text-anchor: middle; dominant-baseline: middle; }
-.ring-num   { fill: var(--ring-text); font-size: 44px; font-weight: 700; text-anchor: middle; }
-.ring-cap   { fill: var(--ring-dim); font-size: 13px; text-anchor: middle; }
-.ring-date  { fill: var(--ring-text); font-size: 13px; text-anchor: middle; }
+.ring-t1 { fill: var(--ring-text); font-weight: 700; text-anchor: middle; }
+.ring-t2 { fill: var(--ring-dim);  text-anchor: middle; }
+.ring-t3 { fill: var(--ring-text); text-anchor: middle; }
 
+/* легенда */
 .ring-legend {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 4px;
-  margin-top: 8px;
-  font-size: 0.75rem;
-  color: var(--ring-dim);
+  display: flex; align-items: center; justify-content: flex-end;
+  gap: 4px; margin-top: 8px; font-size: 0.75rem; color: var(--ring-dim);
 }
 .ring-legend i { width: 12px; height: 12px; border-radius: 2px; display: inline-block; }
 .ring-legend .l0 { background: var(--lv0); }
@@ -102,34 +91,70 @@ body {
 .ring-legend span { margin: 0 4px; }
 
 .ring-source { margin: 8px 0 0; font-size: 0.72rem; color: var(--ring-dim); }
+
+/* всё время: плитки со статистикой */
+.ring-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.ring-stat {
+  padding: 10px 12px;
+  border: 1px solid var(--ring-line);
+  border-radius: 3px;
+  background: rgba(2, 24, 10, 0.6);
+}
+.ring-stat b { display: block; font-size: 1.5rem; line-height: 1.2; }
+.ring-stat small { display: block; margin-top: 2px; font-size: 0.72rem; color: var(--ring-dim); }
+
+.ring-msg { margin: 0; font-size: 0.85rem; color: var(--ring-dim); }
 </style>
 </head>
 <body>
 
-<section class="ring-card" id="activity-ring">
-  <h2>Активность по дням</h2>
-  <p class="ring-sub">Каждый сектор — неделя, каждое кольцо — день недели. Чем ярче, тем больше вкладов.</p>
-  <svg viewBox="0 0 660 660" role="img" aria-label="Круговой календарь активности на GitHub"></svg>
-  <div class="ring-legend">
-    <span>меньше</span><i class="l0"></i><i class="l1"></i><i class="l2"></i><i class="l3"></i><i class="l4"></i><span>больше</span>
-  </div>
-  <p class="ring-source" data-role="source"></p>
-</section>
+<!-- ============ БЛОК 2: HTML (вставь туда, где должна быть статистика) ============ -->
+<div class="ring-wrap">
 
+  <!-- верх: последние 12 месяцев -->
+  <section class="ring-card" id="activity-ring">
+    <h2>Активность за 12 месяцев</h2>
+    <p class="ring-sub">Каждый сектор — неделя, каждое кольцо — день недели (от понедельника внутри до воскресенья снаружи).</p>
+    <svg viewBox="0 0 660 660" role="img" aria-label="Круговой календарь активности на GitHub"></svg>
+    <div class="ring-legend">
+      <span>меньше</span><i class="l0"></i><i class="l1"></i><i class="l2"></i><i class="l3"></i><i class="l4"></i><span>больше</span>
+    </div>
+    <p class="ring-source" data-role="source"></p>
+  </section>
+
+  <!-- низ: за всё время (скрыт, пока данные не загрузились) -->
+  <section class="ring-card" id="activity-alltime" hidden>
+    <h2>Активность за всё время</h2>
+    <p class="ring-sub">Вся история в одном круге: от первого дня активности (сверху) по часовой стрелке до сегодня.</p>
+    <div class="ring-stats" data-role="stats"></div>
+    <svg viewBox="0 0 680 680" role="img" aria-label="Активность за всё время" data-role="tree"></svg>
+    <div class="ring-legend">
+      <span>меньше</span><i class="l0"></i><i class="l1"></i><i class="l2"></i><i class="l3"></i><i class="l4"></i><span>больше</span>
+    </div>
+    <p class="ring-msg" data-role="msg" hidden></p>
+  </section>
+
+</div>
+
+<!-- ============ БЛОК 3: JS (вставь перед </body> или в свой скрипт) ============ -->
 <script>
 (function () {
-  const USER = "Grepleon";            // GitHub-ник
-  const root = document.getElementById("activity-ring");
-  const svg = root.querySelector("svg");
-  const sourceEl = root.querySelector('[data-role="source"]');
+  const USER = "Grepleon"; // GitHub-ник
+
+  const mainCard = document.getElementById("activity-ring");
+  const mainSvg = mainCard.querySelector("svg");
+  const sourceEl = mainCard.querySelector('[data-role="source"]');
+  const allCard = document.getElementById("activity-alltime");
+  const statsEl = allCard.querySelector('[data-role="stats"]');
+  const treeSvg = allCard.querySelector('[data-role="tree"]');
+  const msgEl = allCard.querySelector('[data-role="msg"]');
 
   const NS = "http://www.w3.org/2000/svg";
-  const CX = 330, CY = 330;
-  const R0 = 118;      // радиус пустого центра
-  const TH = 25;       // толщина одного кольца (дня недели)
-  const GAP = 2.5;     // зазор между ячейками, px
-  const SEAM = 0.07;   // разрыв круга в месте "начала года", рад
-
   const MONTHS = ["янв", "фев", "мар", "апр", "мая", "июн", "июл", "авг", "сен", "окт", "ноя", "дек"];
 
   /* ---------- вспомогательное ---------- */
@@ -137,6 +162,7 @@ body {
   const isoDate = d => d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate());
   const parseDate = s => { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); };
   const mondayIndex = d => (d.getDay() + 6) % 7;
+  const fmtNum = n => n.toLocaleString("ru-RU");
 
   function plural(n, one, few, many) {
     const m10 = n % 10, m100 = n % 100;
@@ -144,13 +170,8 @@ body {
     if (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) return few;
     return many;
   }
-  const fmtNum = n => n.toLocaleString("ru-RU");
   const contribWord = n => plural(n, "вклад", "вклада", "вкладов");
-
-  function levelOf(count, max) {
-    if (!count) return 0;
-    return Math.min(4, Math.max(1, Math.ceil((count / max) * 4)));
-  }
+  const dayWord = n => plural(n, "день", "дня", "дней");
 
   function el(name, attrs, text) {
     const e = document.createElementNS(NS, name);
@@ -159,13 +180,31 @@ body {
     return e;
   }
 
-  async function loadYear() {
-    const r = await fetch("https://github-contributions-api.jogruber.de/v4/" + USER + "?y=last");
-    if (!r.ok) throw new Error("year api " + r.status);
-    const j = await r.json();
-    return { days: j.contributions.map(c => ({ date: c.date, count: c.count })), note: "за последние 12 месяцев" };
+  // Уровни цвета по квартилям ненулевых дней: один большой всплеск не «гасит» остальные
+  function makeLevelFn(days) {
+    const nz = days.map(d => d.count).filter(c => c > 0).sort((a, b) => a - b);
+    if (!nz.length) return () => 0;
+    const q = p => nz[Math.min(nz.length - 1, Math.floor(p * nz.length))];
+    const q1 = q(0.25), q2 = q(0.5), q3 = q(0.75);
+    return c => (c === 0 ? 0 : c <= q1 ? 1 : c <= q2 ? 2 : c <= q3 ? 3 : 4);
   }
 
+  /* ---------- загрузка данных ---------- */
+  // 1) Вся история по дням из публичного календаря профиля (сторонний сервис github-contributions-api)
+  async function loadAll() {
+    const r = await fetch("https://github-contributions-api.jogruber.de/v4/" + USER + "?y=all");
+    if (!r.ok) throw new Error("year api " + r.status);
+    const j = await r.json();
+    const today = isoDate(new Date());
+    const days = j.contributions
+      .map(c => ({ date: c.date, count: c.count }))
+      .filter(c => c.date <= today)
+      .sort((a, b) => (a.date < b.date ? -1 : 1));
+    if (!days.length) throw new Error("no data");
+    return { days, full: true, note: "GitHub, публичный календарь профиля" };
+  }
+
+  // 2) Запасной вариант: публичные события GitHub (только коммиты, около 90 дней)
   async function loadEvents() {
     const perDay = {};
     for (let page = 1; page <= 3; page++) {
@@ -187,9 +226,10 @@ body {
       const k = isoDate(d);
       days.push({ date: k, count: perDay[k] || 0 });
     }
-    return { days, note: "только коммиты из публичных событий, GitHub отдаёт примерно 90 дней" };
+    return { days, full: false, note: "GitHub, только коммиты из публичных событий (около 90 дней)" };
   }
 
+  // 3) Демо, чтобы было что смотреть без сети
   function demoData() {
     const days = [];
     const end = new Date(); end.setHours(0, 0, 0, 0);
@@ -201,12 +241,12 @@ body {
       const c = rnd() < 0.55 * burst + 0.1 ? Math.floor(rnd() * 12 * burst) : 0;
       days.push({ date: isoDate(d), count: c });
     }
-    return { days, note: "демо-данные: не удалось загрузить настоящие", demo: true };
+    return { days, full: false, demo: true, note: "демо-данные: настоящие загрузить не удалось" };
   }
 
-  function pt(r, a) { return [CX + r * Math.sin(a), CY - r * Math.cos(a)]; }
-
-  function sectorPath(r1, r2, a1, a2) {
+  /* ---------- рисование одного кольца ---------- */
+  function sectorPath(cx, cy, r1, r2, a1, a2) {
+    const pt = (r, a) => [cx + r * Math.sin(a), cy - r * Math.cos(a)];
     const [x1, y1] = pt(r2, a1), [x2, y2] = pt(r2, a2);
     const [x3, y3] = pt(r1, a2), [x4, y4] = pt(r1, a1);
     const large = a2 - a1 > Math.PI ? 1 : 0;
@@ -216,98 +256,180 @@ body {
            "A" + r1 + " " + r1 + " 0 " + large + " 0 " + x4 + " " + y4 + "Z";
   }
 
-  function render(data) {
-    const days = data.days;
-    const max = Math.max(1, ...days.map(d => d.count));
-    const total = days.reduce((s, d) => s + d.count, 0);
-
-    // текущая серия дней подряд (если сегодня пусто — считаем со вчера)
-    let streak = 0, i = days.length - 1;
-    if (i >= 0 && days[i].count === 0) i--;
-    for (; i >= 0 && days[i].count > 0; i--) streak++;
-
+  /*
+    o.cx, o.cy   центр
+    o.r0, o.th   радиус пустого центра и толщина кольца-дня
+    o.gap, o.seam зазор между ячейками (px) и разрыв круга (рад)
+    o.months     подписывать месяцы
+    o.fs         размеры шрифта центра [крупно, средне, мелко]
+    o.dy         смещения строк центра по вертикали
+    o.idle()     строки центра, пока ничего не выбрано
+    o.day(d)     строки центра для выбранного дня
+    o.level      функция count -> 0..4
+    o.todayKey   дата, которую нужно обвести
+  */
+  function drawRing(svg, days, o) {
+    svg.textContent = "";
     const first = parseDate(days[0].date);
     const offset = mondayIndex(first);
     const cols = Math.floor((days.length - 1 + offset) / 7) + 1;
-    const colW = (Math.PI * 2 - SEAM) / cols;
-    const todayKey = days[days.length - 1].date;
+    const colW = (Math.PI * 2 - o.seam) / cols;
 
-    svg.textContent = "";
-    svg.setAttribute("aria-label",
-      "Круговой календарь активности на GitHub: " + fmtNum(total) + " " + contribWord(total));
-
-    // подписи месяцев
-    const monthCols = [];
-    days.forEach((d, idx) => {
-      const dt = parseDate(d.date);
-      if (dt.getDate() === 1) monthCols.push({ col: Math.floor((idx + offset) / 7), m: dt.getMonth() });
-    });
-    if (monthCols.length && monthCols[0].col > 3) {
-      monthCols.unshift({ col: 0, m: first.getMonth() });
+    if (o.months) {
+      const marks = [];
+      days.forEach((d, idx) => {
+        const dt = parseDate(d.date);
+        if (dt.getDate() === 1) marks.push({ col: Math.floor((idx + offset) / 7), m: dt.getMonth(), y: dt.getFullYear() });
+      });
+      if (marks.length && marks[0].col > 3) marks.unshift({ col: 0, m: first.getMonth(), y: first.getFullYear() });
+      const labelR = o.r0 + 7 * o.th + 18;
+      marks.forEach(mk => {
+        // январь подписан годом; при длинной истории подписываем только годы
+        if (o.yearsOnly && mk.m !== 0 && mk.col !== 0) return;
+        const text = mk.m === 0 ? String(mk.y) : (o.yearsOnly ? String(mk.y) : MONTHS[mk.m]);
+        const a = o.seam / 2 + (mk.col + 0.5) * colW;
+        const t = el("text", {
+          class: "ring-month",
+          x: o.cx + labelR * Math.sin(a),
+          y: o.cy - labelR * Math.cos(a)
+        }, text);
+        if (mk.m === 0) t.style.fill = "var(--ring-text)";
+        svg.appendChild(t);
+      });
     }
-    const labelR = R0 + 7 * TH + 18;
-    monthCols.forEach(mc => {
-      const a = SEAM / 2 + (mc.col + 0.5) * colW;
-      const [x, y] = pt(labelR, a);
-      svg.appendChild(el("text", { class: "ring-month", x, y }, MONTHS[mc.m]));
-    });
 
-    // ячейки
-    const cells = document.createDocumentFragment();
+    const frag = document.createDocumentFragment();
     days.forEach((d, idx) => {
       const col = Math.floor((idx + offset) / 7);
       const row = (idx + offset) % 7;
-      const r1 = R0 + row * TH + GAP / 2;
-      const r2 = R0 + (row + 1) * TH - GAP / 2;
-      const mid = (r1 + r2) / 2;
-      const pa = (GAP / 2) / mid;
-      const a1 = SEAM / 2 + col * colW + pa;
-      const a2 = SEAM / 2 + (col + 1) * colW - pa;
-      const cls = "ring-cell l" + levelOf(d.count, max) + (d.date === todayKey ? " today" : "");
-      const p = el("path", { d: sectorPath(r1, r2, a1, a2), class: cls, "data-i": idx });
+      const r1 = o.r0 + row * o.th + o.gap / 2;
+      const r2 = o.r0 + (row + 1) * o.th - o.gap / 2;
+      const pa = (o.gap / 2) / ((r1 + r2) / 2);
+      const a1 = o.seam / 2 + col * colW + pa;
+      const a2 = o.seam / 2 + (col + 1) * colW - pa;
+      const cls = "ring-cell l" + o.level(d.count) + (d.date === o.todayKey ? " today" : "");
+      const p = el("path", { d: sectorPath(o.cx, o.cy, r1, r2, a1, a2), class: cls, "data-i": idx });
       p.style.setProperty("--d", col * 8 + "ms");
-      cells.appendChild(p);
+      frag.appendChild(p);
     });
-    svg.appendChild(cells);
+    svg.appendChild(frag);
 
-    // центр
-    const num = el("text", { class: "ring-num", x: CX, y: CY - 4 });
-    const cap = el("text", { class: "ring-cap", x: CX, y: CY + 20 });
-    const sub = el("text", { class: "ring-date", x: CX, y: CY + 44 });
-    svg.append(num, cap, sub);
-
-    function showTotal() {
-      num.textContent = fmtNum(total);
-      cap.textContent = contribWord(total) + (data.demo ? " (демо)" : "");
-      sub.textContent = streak ? "серия: " + streak + " " + plural(streak, "день", "дня", "дней") : "";
-    }
-    function showDay(idx) {
-      const d = days[idx];
-      num.textContent = fmtNum(d.count);
-      cap.textContent = contribWord(d.count);
-      sub.textContent = parseDate(d.date).toLocaleDateString("ru-RU", {
-        weekday: "short", day: "numeric", month: "long", year: "numeric"
-      });
-    }
-    showTotal();
+    const t = [0, 1, 2].map(k => {
+      const e = el("text", { class: "ring-t" + (k + 1), x: o.cx, y: o.cy + o.dy[k] });
+      e.style.fontSize = o.fs[k] + "px";
+      svg.appendChild(e);
+      return e;
+    });
+    const show = lines => lines.forEach((s, k) => { t[k].textContent = s; });
+    show(o.idle());
 
     svg.onpointerover = svg.onpointerdown = e => {
       const i = e.target.getAttribute && e.target.getAttribute("data-i");
-      if (i !== null && i !== undefined) showDay(+i);
+      if (i !== null && i !== undefined) show(o.day(days[+i]));
     };
-    svg.onpointerleave = showTotal;
-
-    sourceEl.textContent = "Источник: GitHub, " + data.note + ".";
+    svg.onpointerleave = () => show(o.idle());
   }
 
+  /* ---------- статистика по всем дням ---------- */
+  function computeStats(days) {
+    let total = 0, active = 0, best = days[0], run = 0, longest = 0;
+    for (const d of days) {
+      total += d.count;
+      if (d.count > 0) { active++; run++; if (run > longest) longest = run; } else run = 0;
+      if (d.count > best.count) best = d;
+    }
+    return { total, active, best, longest };
+  }
+
+  function currentStreak(days) {
+    let i = days.length - 1, n = 0;
+    if (i >= 0 && days[i].count === 0) i--;
+    for (; i >= 0 && days[i].count > 0; i--) n++;
+    return n;
+  }
+
+  const longDate = s => parseDate(s).toLocaleDateString("ru-RU", {
+    weekday: "short", day: "numeric", month: "long", year: "numeric"
+  });
+  const shortDate = s => parseDate(s).toLocaleDateString("ru-RU", { day: "numeric", month: "short" });
+
+  /* ---------- сборка страницы ---------- */
+  function renderMain(data, level) {
+    const days = data.days.slice(-365);
+    const total = days.reduce((s, d) => s + d.count, 0);
+    const streak = currentStreak(days);
+    mainSvg.setAttribute("aria-label",
+      "Круговой календарь активности на GitHub: " + fmtNum(total) + " " + contribWord(total) + " за 12 месяцев");
+
+    drawRing(mainSvg, days, {
+      cx: 330, cy: 330, r0: 118, th: 25, gap: 2.5, seam: 0.07,
+      months: true,
+      fs: [44, 13, 13], dy: [-4, 20, 44],
+      level, todayKey: isoDate(new Date()),
+      idle: () => [fmtNum(total), contribWord(total) + (data.demo ? " (демо)" : ""),
+                   streak ? "серия: " + streak + " " + dayWord(streak) : ""],
+      day: d => [fmtNum(d.count), contribWord(d.count), longDate(d.date)]
+    });
+    sourceEl.textContent = "Источник: " + data.note + ".";
+  }
+
+  function renderAllTime(days, level) {
+    const st = computeStats(days);
+    const tiles = [
+      [fmtNum(st.total), "вкладов за всё время"],
+      [fmtNum(st.active), plural(st.active, "активный день", "активных дня", "активных дней")],
+      [st.longest + " " + dayWord(st.longest), "самая длинная серия"],
+      [fmtNum(st.best.count), "рекорд за день, " + shortDate(st.best.date) + " " + parseDate(st.best.date).getFullYear()]
+    ];
+    statsEl.textContent = "";
+    tiles.forEach(([v, label]) => {
+      const box = document.createElement("div");
+      box.className = "ring-stat";
+      const b = document.createElement("b"); b.textContent = v;
+      const s = document.createElement("small"); s.textContent = label;
+      box.append(b, s);
+      statsEl.appendChild(box);
+    });
+
+    // одно кольцо на всю историю: начинаем с первого дня активности
+    const firstActive = days.findIndex(d => d.count > 0);
+    const hist = days.slice(Math.max(0, firstActive));
+    const years = new Set(hist.map(d => d.date.slice(0, 4))).size;
+
+    treeSvg.setAttribute("aria-label",
+      "Активность за всё время: " + fmtNum(st.total) + " " + contribWord(st.total));
+    drawRing(treeSvg, hist, {
+      cx: 340, cy: 340, r0: 150, th: 22, gap: 1.6, seam: 0.07,
+      months: true, yearsOnly: years > 3,
+      fs: [48, 14, 12], dy: [-4, 22, 46],
+      level, todayKey: isoDate(new Date()),
+      idle: () => [fmtNum(st.total), contribWord(st.total), "за всё время"],
+      day: d => [fmtNum(d.count), contribWord(d.count), longDate(d.date)]
+    });
+    msgEl.hidden = true;
+    allCard.hidden = false;
+  }
+
+  /* ---------- запуск ---------- */
   (async function init() {
     let data;
-    try { data = await loadYear(); }
+    try { data = await loadAll(); }
     catch (e1) {
       try { data = await loadEvents(); }
       catch (e2) { data = demoData(); }
     }
-    render(data);
+    const level = makeLevelFn(data.days);
+    renderMain(data, level);
+    if (data.full) renderAllTime(data.days, level);
+    else {
+      // полной истории нет: честно говорим об этом вместо молчаливого скрытия блока
+      statsEl.textContent = "";
+      treeSvg.style.display = "none";
+      allCard.querySelector(".ring-legend").style.display = "none";
+      msgEl.textContent = "Не удалось загрузить историю за всё время: сервис github-contributions-api недоступен. Обнови страницу позже.";
+      msgEl.hidden = false;
+      allCard.hidden = false;
+    }
   })();
 })();
 </script>
