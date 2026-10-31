@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="styles/buttons.css">
     <link rel="stylesheet" href="styles/stats-extra.css">
     <link rel="stylesheet" href="styles/stats-extra-hover.css">
+    <link rel="stylesheet" href="styles/activity-ring.css">
 
     <meta name="description" content="Grepleon — статистика по git репозитоию">
 
@@ -17,6 +18,7 @@
     <script src="scripts/glow.js" defer> </script>
     <script src="scripts/gh-stat.js" defer> </script>
     <script src="scripts/gh-extra.js" defer> </script>
+    <script src="scripts/activity-ring.js" defer> </script>
 
     <link rel="icon" type="image/png" href="res/Grepleon%202026.08%20logo-circle.png">
 </head>
@@ -181,6 +183,25 @@
                         * Инициализация сборщика...
                     </p>
                 </section>
+            </section>
+            <section id="activity-year" class="base activity-section">
+                <h3 class="main-color">Активность за 12 месяцев</h3>
+                <p class="activity-note">Сектор — неделя, кольцо — день недели: от понедельника внутри до воскресенья снаружи.</p>
+                <svg id="activity-year-svg" viewBox="0 0 660 660" role="img" aria-label="Круговой календарь активности на GitHub"></svg>
+                <div class="activity-legend">
+                    <span>меньше</span><i class="l0"></i><i class="l1"></i><i class="l2"></i><i class="l3"></i><i class="l4"></i><span>больше</span>
+                </div>
+                <p class="activity-note" id="activity-source"></p>
+            </section>
+            <section id="activity-all" class="base activity-section activity-hidden">
+                <h3 class="main-color">Активность за всё время</h3>
+                <p class="activity-note">Вся история в одном круге: от первого дня активности сверху по часовой стрелке до сегодня.</p>
+                <div class="github-summary" id="activity-stats"></div>
+                <svg id="activity-all-svg" viewBox="0 0 680 680" role="img" aria-label="Активность за всё время"></svg>
+                <div class="activity-legend">
+                    <span>меньше</span><i class="l0"></i><i class="l1"></i><i class="l2"></i><i class="l3"></i><i class="l4"></i><span>больше</span>
+                </div>
+                <p class="activity-note activity-hidden" id="activity-msg"></p>
             </section>
             <section id="projects">
                 <h3 class="main-color" id="headline-4"> </h3>

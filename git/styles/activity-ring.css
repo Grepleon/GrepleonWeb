@@ -1,0 +1,99 @@
+:root {
+  --ring-line: #0a5a22;
+  --ring-text: #22ff5a;
+  --ring-dim: #14a83a;
+  --lv0: #06210f;
+  --lv1: #0b5c24;
+  --lv2: #11993a;
+  --lv3: #1fd54f;
+  --lv4: #6dff94;
+}
+
+.activity-section {
+  margin-top: 32px;
+}
+
+.activity-hidden {
+  display: none !important;
+}
+
+.activity-section svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  touch-action: manipulation;
+}
+
+.activity-note {
+  margin: 0 0 12px;
+  font-size: 0.8rem;
+  color: var(--ring-dim);
+}
+
+#activity-all .github-summary {
+  margin-bottom: 16px;
+}
+
+.ring-cell {
+  stroke: none;
+  cursor: crosshair;
+  opacity: 0;
+  animation: ring-in 0.35s ease-out forwards;
+  animation-delay: var(--d, 0ms);
+}
+.ring-cell.l0 { fill: var(--lv0); }
+.ring-cell.l1 { fill: var(--lv1); }
+.ring-cell.l2 { fill: var(--lv2); }
+.ring-cell.l3 { fill: var(--lv3); }
+.ring-cell.l4 { fill: var(--lv4); }
+.ring-cell:hover,
+.ring-cell.today {
+  stroke: var(--ring-text);
+  stroke-width: 1.2;
+}
+
+@keyframes ring-in {
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ring-cell {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+.ring-month {
+  fill: var(--ring-dim);
+  font-size: 13px;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+.ring-month.ring-year {
+  fill: var(--ring-text);
+}
+.ring-t1 { fill: var(--ring-text); font-weight: 700; text-anchor: middle; }
+.ring-t2 { fill: var(--ring-dim); text-anchor: middle; }
+.ring-t3 { fill: var(--ring-text); text-anchor: middle; }
+
+.activity-legend {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  margin: 8px 0;
+  font-size: 0.75rem;
+  color: var(--ring-dim);
+}
+.activity-legend i {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+}
+.activity-legend .l0 { background: var(--lv0); }
+.activity-legend .l1 { background: var(--lv1); }
+.activity-legend .l2 { background: var(--lv2); }
+.activity-legend .l3 { background: var(--lv3); }
+.activity-legend .l4 { background: var(--lv4); }
+.activity-legend span { margin: 0 4px; }
