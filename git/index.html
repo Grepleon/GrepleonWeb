@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="styles/stats-extra.css">
     <link rel="stylesheet" href="styles/stats-extra-hover.css">
     <link rel="stylesheet" href="styles/activity-ring.css">
+    <link rel="stylesheet" href="styles/event-log.css">
 
     <meta name="description" content="Grepleon — статистика по git репозитоию">
 
@@ -19,6 +20,7 @@
     <script src="scripts/gh-stat.js" defer> </script>
     <script src="scripts/gh-extra.js" defer> </script>
     <script src="scripts/activity-ring.js" defer> </script>
+    <script src="scripts/event-log.js" defer> </script>
 
     <link rel="icon" type="image/png" href="res/Grepleon%202026.08%20logo-circle.png">
 </head>
@@ -101,6 +103,12 @@
                         PyPI</a>
                     </span>
                 </p>
+            </section>
+
+            <section id="event-log" aria-label="Последние события на GitHub">
+                <p class="el-head">$ tail -f github/events.log <span>— Grepleon</span></p>
+                <ul class="el-list"></ul>
+                <p class="el-status">* загрузка…<span class="el-cursor" aria-hidden="true"></span></p>
             </section>
 
         </div>

@@ -1,0 +1,463 @@
+(() => {
+  const USER      = 'Grepleon';
+  const LIMIT     = 12;                   // сколько строк показывать
+  const CACHE_MS  = 5 * 60 * 1000;        // GitHub без токена даёт 60 запросов/час на IP
+  const CACHE_KEY = 'eventlog:' + USER;
+  const HINT      = ' · клик по строке — подробности';
+  const MAX_COMMITS = 8;                  // коммитов в раскрытом push
+  const MAX_FILES   = 6;                  // файлов в раскрытом push
+  const MAX_REFS    = 3;                  // веток в одном склеенном push
+
+  const root   = document.getElementById('event-log');
+  const list   = root.querySelector('.el-list');
+  const status = root.querySelector('.el-status');
+
+  const ACT = {
+    opened: 'открыт', closed: 'закрыт', reopened: 'открыт снова', merged: 'смёржен',
+    edited: 'изменён', created: 'создан', deleted: 'удалён', started: 'поставлена звезда',
+    published: 'опубликован'
+  };
+  const REVIEW = {
+    approved: 'одобрен', changes_requested: 'нужны правки', commented: 'комментарий', dismissed: 'снят'
+  };
+
+  /* ---------- мелкие помощники (DOM строим вручную, данные API не идут в innerHTML) ---------- */
+
+  const el = (tag, cls, text) => {
+    const n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  };
+
+  const link = (href, text) => {
+    if (!/^https:\/\//.test(href || '')) return el('span', '', text);
+    const a = el('a', '', text);
+    a.href = href;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    return a;
+  };
+
+  const trunc = (s, n) => {
+    s = String(s || '').replace(/\s+/g, ' ').trim();
+    return s.length > n ? s.slice(0, n - 1) + '…' : s;
+  };
+
+  const num      = (n) => (n ? '#' + n : '');
+  const sizeOf   = (p) => (p.size != null ? p.size : (p.commits ? p.commits.length : 0));
+  const shortRef = (r) => String(r || '').replace(/^refs\/(heads|tags)\//, '');
+
+  function kv(k, v) {
+    const row = el('div', 'el-kv');
+    const val = el('span', 'el-v');
+    if (typeof v === 'string') val.textContent = v; else val.appendChild(v);
+    row.append(el('span', 'el-k', k), val);
+    return row;
+  }
+  const maybe = (box, k, v) => { if (v) box.appendChild(kv(k, v)); };
+  const note  = (text, isError) => el('div', 'el-note' + (isError ? ' is-error' : ''), text);
+
+  function ago(iso) {
+    const s = Math.max(0, (Date.now() - new Date(iso).getTime()) / 1000);
+    if (s < 60) return 'только что';
+    const m = s / 60;
+    if (m < 60) return Math.floor(m) + ' мин назад';
+    const h = m / 60;
+    if (h < 24) return Math.floor(h) + ' ч назад';
+    const d = h / 24;
+    if (d < 30) return Math.floor(d) + ' дн назад';
+    return new Date(iso).toLocaleDateString('ru-RU');
+  }
+  const clock = (d = new Date()) => d.toLocaleTimeString('ru-RU', { hour12: false });
+
+  /* ---------- запросы к GitHub ---------- */
+
+  async function gh(path) {
+    const ctrl  = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 8000);
+    try {
+      const res = await fetch('https://api.github.com' + path, {
+        headers: { Accept: 'application/vnd.github+json' },
+        signal: ctrl.signal
+      });
+      if (!res.ok) {
+        const err = new Error('GitHub ответил ' + res.status);
+        err.status = res.status;
+        throw err;
+      }
+      return await res.json();
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  function explain(err) {
+    if (err.name === 'AbortError') return 'GitHub не ответил за 8 секунд';
+    if (err.status === 403 || err.status === 429) return 'лимит запросов GitHub API исчерпан, попробуй позже';
+    if (err.status === 404 || err.status === 422) return 'детали недоступны: ветку могли переписать или удалить';
+    return err.message;
+  }
+
+  const cacheGet = (k) => { try { return JSON.parse(sessionStorage.getItem('eventlog:d:' + k)); } catch (_) { return null; } };
+  const cacheSet = (k, v) => { try { sessionStorage.setItem('eventlog:d:' + k, JSON.stringify(v)); } catch (_) {} };
+
+  /* ---------- события -> короткие строки ---------- */
+
+  function describe(item) {
+    const p = item.payload;
+    switch (item.type) {
+      case 'PushEvent': {
+        const n = item.parts.reduce((s, e) => s + sizeOf(e.payload), 0);
+        return n > 1 ? `push ×${n}` : 'push';
+      }
+      case 'PullRequestEvent': {
+        const pr  = p.pull_request || {};
+        const act = p.action === 'closed' && pr.merged ? 'merged' : p.action;
+        return `PR ${num(p.number || pr.number)} ${act || ''}`.trim();
+      }
+      case 'PullRequestReviewEvent':
+        return `review PR ${num(p.pull_request && p.pull_request.number)}`.trim();
+      case 'PullRequestReviewCommentEvent':
+        return `comment PR ${num(p.pull_request && p.pull_request.number)}`.trim();
+      case 'IssuesEvent':
+        return `issue ${num(p.issue && p.issue.number)} ${p.action || ''}`.replace(/\s+/g, ' ').trim();
+      case 'IssueCommentEvent':
+        return `comment ${num(p.issue && p.issue.number)}`.trim();
+      case 'CreateEvent':
+        return `create ${p.ref_type || ''} ${p.ref || ''}`.replace(/\s+/g, ' ').trim();
+      case 'DeleteEvent':
+        return `delete ${p.ref_type || ''} ${p.ref || ''}`.replace(/\s+/g, ' ').trim();
+      case 'WatchEvent':   return 'star';
+      case 'ForkEvent':    return 'fork';
+      case 'PublicEvent':  return 'repo → public';
+      case 'ReleaseEvent': return `release ${(p.release && p.release.tag_name) || ''}`.trim();
+      default:             return item.type.replace(/Event$/, '').toLowerCase();
+    }
+  }
+
+  /* Сортируем по времени и склеиваем подряд идущие push в один репозиторий.
+     В parts лежат исходные события (новые первыми): они нужны для раскрытия. */
+  function collapse(events) {
+    const sorted = events.slice().sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    const out = [];
+    for (const e of sorted) {
+      const prev = out[out.length - 1];
+      if (prev && e.type === 'PushEvent' && prev.type === 'PushEvent' && prev.repo.name === e.repo.name) {
+        prev.parts.push(e);
+        continue;
+      }
+      out.push({ type: e.type, repo: e.repo, created_at: e.created_at, payload: e.payload || {}, parts: [e] });
+    }
+    return out;
+  }
+
+  /* ---------- push: коммиты и файлы ---------- */
+
+  const slimCommit = (c) => ({
+    sha: c.sha,
+    msg: String((c.commit && c.commit.message) || '').split('\n')[0],
+    url: c.html_url
+  });
+
+  /* g — push-события одной ветки, новые первыми */
+  async function loadGroup(repo, g) {
+    // Старый формат события: коммиты уже внутри, запрос не нужен
+    if (g.every((e) => Array.isArray(e.payload.commits) && e.payload.commits.length)) {
+      const commits = g.flatMap((e) => e.payload.commits.slice().reverse().map((c) => ({
+        sha: c.sha,
+        msg: String(c.message || '').split('\n')[0],
+        url: `https://github.com/${repo}/commit/${c.sha}`
+      })));
+      return { commits, total: commits.length, files: null, url: null };
+    }
+
+    const head   = g[0].payload.head;
+    const before = g[g.length - 1].payload.before;
+    if (!head) throw new Error('в событии нет данных о коммитах');
+
+    const key = `${repo}@${before}..${head}`;
+    const hit = cacheGet(key);
+    if (hit) return hit;
+
+    let res;
+    if (!before || /^0+$/.test(before)) {
+      // новая ветка: сравнивать не с чем, берём последние коммиты до head
+      const n = Math.min(g.reduce((s, e) => s + sizeOf(e.payload), 0) || 1, 10);
+      const arr = await gh(`/repos/${repo}/commits?sha=${head}&per_page=${n}`);
+      res = { commits: arr.map(slimCommit), total: arr.length, files: null, url: `https://github.com/${repo}/commit/${head}` };
+    } else {
+      const d = await gh(`/repos/${repo}/compare/${before}...${head}`);
+      res = {
+        commits: (d.commits || []).map(slimCommit).reverse(),     // новые первыми
+        total: d.total_commits != null ? d.total_commits : (d.commits || []).length,
+        files: (d.files || []).map((f) => ({ n: f.filename, a: f.additions, d: f.deletions })),
+        url: d.html_url
+      };
+    }
+    cacheSet(key, res);
+    return res;
+  }
+
+  function commitBlock(data) {
+    const wrap = el('div', 'el-block');
+
+    if (!data.commits.length) {
+      wrap.appendChild(note('коммитов не найдено'));
+      return wrap;
+    }
+
+    data.commits.slice(0, MAX_COMMITS).forEach((c) => {
+      const row = el('div', 'el-kv');
+      const k = el('span', 'el-k');
+      k.appendChild(link(c.url, c.sha.slice(0, 7)));
+      row.append(k, el('span', 'el-v', trunc(c.msg, 120) || '(без сообщения)'));
+      wrap.appendChild(row);
+    });
+
+    const hidden = data.total - Math.min(data.commits.length, MAX_COMMITS);
+    if (hidden > 0) wrap.appendChild(note(`…и ещё ${hidden}`));
+
+    if (data.files && data.files.length) {
+      const adds = data.files.reduce((s, f) => s + (f.a || 0), 0);
+      const dels = data.files.reduce((s, f) => s + (f.d || 0), 0);
+      const stat = kv('изменения', `${data.files.length} файлов · +${adds} -${dels}`);
+      stat.classList.add('el-gap');
+      wrap.appendChild(stat);
+
+      data.files.slice(0, MAX_FILES).forEach((f) => {
+        wrap.appendChild(kv(`+${f.a || 0} -${f.d || 0}`, f.n));
+      });
+      if (data.files.length > MAX_FILES) wrap.appendChild(note(`…и ещё ${data.files.length - MAX_FILES} файлов`));
+    }
+    return wrap;
+  }
+
+  async function fillPush(item, slot) {
+    const repo = item.repo.name;
+    const groups = new Map();
+    for (const e of item.parts) {
+      const r = e.payload.ref || '';
+      if (!groups.has(r)) groups.set(r, []);
+      groups.get(r).push(e);
+    }
+    const all     = [...groups.entries()];
+    const entries = all.slice(0, MAX_REFS);
+
+    slot.appendChild(note('* загрузка коммитов…'));
+    const results = await Promise.allSettled(entries.map(([, g]) => loadGroup(repo, g)));
+
+    slot.textContent = '';
+    results.forEach((r, i) => {
+      const ref = shortRef(entries[i][0]);
+      if (ref) slot.appendChild(kv('ветка', ref));
+      slot.appendChild(r.status === 'fulfilled'
+        ? commitBlock(r.value)
+        : note('! ' + explain(r.reason), true));
+    });
+    if (all.length > MAX_REFS) slot.appendChild(note(`…и ещё веток: ${all.length - MAX_REFS}`));
+  }
+
+  /* ---------- раскрытая часть для остальных событий (запросы не нужны) ---------- */
+
+  function buildDetails(item, box) {
+    const p    = item.payload;
+    const repo = item.repo.name;
+
+    box.appendChild(kv('репо', link('https://github.com/' + repo, repo)));
+    box.appendChild(kv('когда', new Date(item.created_at).toLocaleString('ru-RU') +
+      (item.parts.length > 1 ? ` (последний из ${item.parts.length} пушей)` : '')));
+
+    const prLink = (pr) => pr && pr.html_url
+      ? link(pr.html_url, `#${pr.number} ${trunc(pr.title, 90)}`.trim())
+      : null;
+
+    switch (item.type) {
+      case 'PushEvent': {
+        fillPush(item, box.appendChild(el('div')));
+        break;
+      }
+      case 'PullRequestEvent': {
+        const pr = p.pull_request || {};
+        const merged = p.action === 'closed' && pr.merged;
+        maybe(box, 'PR', prLink(Object.assign({ number: p.number }, pr)));
+        maybe(box, 'статус', ACT[merged ? 'merged' : p.action] || p.action);
+        if (pr.head && pr.base && pr.head.ref && pr.base.ref) box.appendChild(kv('ветки', `${pr.head.ref} → ${pr.base.ref}`));
+        if (typeof pr.changed_files === 'number') {
+          box.appendChild(kv('изменения', `${pr.changed_files} файлов · +${pr.additions || 0} -${pr.deletions || 0}`));
+        }
+        maybe(box, 'описание', trunc(pr.body, 200));
+        break;
+      }
+      case 'PullRequestReviewEvent': {
+        const rv = p.review || {};
+        maybe(box, 'PR', prLink(p.pull_request));
+        maybe(box, 'вердикт', REVIEW[String(rv.state || '').toLowerCase()] || rv.state);
+        maybe(box, 'текст', trunc(rv.body, 200));
+        break;
+      }
+      case 'PullRequestReviewCommentEvent': {
+        const c = p.comment || {};
+        maybe(box, 'PR', prLink(p.pull_request));
+        if (c.body) box.appendChild(kv('комментарий', link(c.html_url, trunc(c.body, 200))));
+        break;
+      }
+      case 'IssuesEvent': {
+        const is = p.issue || {};
+        if (is.html_url) box.appendChild(kv('issue', link(is.html_url, `#${is.number} ${trunc(is.title, 90)}`)));
+        maybe(box, 'статус', ACT[p.action] || p.action);
+        break;
+      }
+      case 'IssueCommentEvent': {
+        const is = p.issue || {}, c = p.comment || {};
+        if (is.html_url) box.appendChild(kv('issue', link(is.html_url, `#${is.number} ${trunc(is.title, 90)}`)));
+        if (c.body) box.appendChild(kv('комментарий', link(c.html_url, trunc(c.body, 200))));
+        break;
+      }
+      case 'CreateEvent': {
+        if (p.ref && (p.ref_type === 'branch' || p.ref_type === 'tag')) {
+          box.appendChild(kv(p.ref_type === 'tag' ? 'тег' : 'ветка',
+            link(`https://github.com/${repo}/tree/${p.ref}`, p.ref)));
+        } else {
+          box.appendChild(kv('создано', 'репозиторий'));
+        }
+        maybe(box, 'описание', trunc(p.description, 200));
+        break;
+      }
+      case 'DeleteEvent':
+        box.appendChild(kv('удалено', `${p.ref_type || ''} ${p.ref || ''}`.trim()));
+        break;
+      case 'WatchEvent':
+        box.appendChild(kv('действие', 'поставлена звезда'));
+        break;
+      case 'ForkEvent':
+        if (p.forkee) box.appendChild(kv('форк', link(p.forkee.html_url, p.forkee.full_name)));
+        break;
+      case 'ReleaseEvent': {
+        const rel = p.release || {};
+        if (rel.html_url) box.appendChild(kv('релиз', link(rel.html_url, rel.name || rel.tag_name)));
+        maybe(box, 'тег', rel.tag_name);
+        break;
+      }
+      case 'PublicEvent':
+        box.appendChild(kv('действие', 'репозиторий стал публичным'));
+        break;
+      default:
+        box.appendChild(kv('тип', item.type));
+    }
+  }
+
+  /* ---------- отрисовка списка ---------- */
+
+  function render(items) {
+    list.textContent = '';
+
+    if (!items.length) {
+      const li = el('li');
+      li.textContent = '> публичных событий пока нет';
+      list.appendChild(li);
+      return;
+    }
+
+    items.slice(0, LIMIT).forEach((item, i) => {
+      const li  = el('li');
+      li.style.setProperty('--i', i);
+
+      const id  = 'el-d-' + i;
+      const row = el('button', 'el-row');
+      row.type = 'button';
+      row.setAttribute('aria-expanded', 'false');
+      row.setAttribute('aria-controls', id);
+
+      const msg = el('span', 'el-msg');
+      const repoShort = item.repo.name.startsWith(USER + '/') ? item.repo.name.slice(USER.length + 1) : item.repo.name;
+      msg.append(el('b', '', describe(item)), document.createTextNode(' → '), el('span', 'el-repo', repoShort));
+
+      const time = el('time', 'el-time', '· ' + ago(item.created_at));
+      time.dateTime = item.created_at;
+      time.title = new Date(item.created_at).toLocaleString('ru-RU');
+
+      row.append(el('span', 'el-prompt', '>'), msg, time);
+
+      const box = el('div', 'el-details');
+      box.id = id;
+      box.hidden = true;
+
+      row.addEventListener('click', () => {
+        const open = row.getAttribute('aria-expanded') !== 'true';
+        row.setAttribute('aria-expanded', String(open));
+        box.hidden = !open;
+        if (open && !box.dataset.ready) {      // детали строим один раз, при первом раскрытии
+          box.dataset.ready = '1';
+          buildDetails(item, box);
+        }
+      });
+
+      li.append(row, box);
+      list.appendChild(li);
+    });
+  }
+
+  function setStatus(text, isError) {
+    status.className = 'el-status' + (isError ? ' is-error' : '');
+    status.textContent = text;
+    const cur = el('span', 'el-cursor');
+    cur.setAttribute('aria-hidden', 'true');
+    status.appendChild(cur);
+  }
+
+  /* ---------- кэш списка событий ---------- */
+
+  function readCache() {
+    try {
+      const raw = localStorage.getItem(CACHE_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch (_) { return null; }
+  }
+  function writeCache(events) {
+    try { localStorage.setItem(CACHE_KEY, JSON.stringify({ t: Date.now(), events })); } catch (_) {}
+  }
+
+  /* ---------- загрузка ---------- */
+
+  async function load(force = false) {
+    const cached = readCache();
+
+    if (!force && cached && Date.now() - cached.t < CACHE_MS) {
+      try {
+        render(collapse(cached.events));
+        setStatus('* журнал обновлён ' + clock(new Date(cached.t)) + HINT);
+        return;
+      } catch (_) { /* битый кэш: идём за свежими данными */ }
+    }
+
+    setStatus('* загрузка…');
+
+    try {
+      const events = await gh(`/users/${USER}/events/public?per_page=60`);
+      writeCache(events);
+      render(collapse(events));
+      setStatus('* журнал обновлён ' + clock() + HINT);
+    } catch (err) {
+      const msg = explain(err);
+      let shown = false;
+      if (cached) {
+        try { render(collapse(cached.events)); shown = true; } catch (_) {}
+      }
+      if (shown) {
+        setStatus('! ' + msg + ' (показаны сохранённые данные от ' + clock(new Date(cached.t)) + ')', true);
+      } else {
+        list.textContent = '';
+        setStatus('! не удалось загрузить журнал: ' + msg, true);
+      }
+    }
+  }
+
+
+  window.refreshEventLog = () => load(true);
+
+  const refreshBtn = document.getElementById('github-refresh');
+  if (refreshBtn) refreshBtn.addEventListener('click', () => load(true));
+
+  load();
+})();
