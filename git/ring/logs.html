@@ -85,7 +85,6 @@
     animation: el-blink 1.1s steps(1) infinite;
   }
 
-  /* Строки «печатаются» по одной при загрузке: единственное движение в блоке */
   @keyframes el-print {
     from { opacity: 0; }
     to   { opacity: 1; }
@@ -108,8 +107,8 @@
 <script>
 (() => {
   const USER     = 'Grepleon';
-  const LIMIT    = 12;                    // сколько строк показывать
-  const CACHE_MS = 5 * 60 * 1000;         // GitHub без токена даёт 60 запросов/час на IP
+  const LIMIT    = 12;
+  const CACHE_MS = 5 * 60 * 1000;
   const CACHE_KEY = 'eventlog:' + USER;
 
   const root   = document.getElementById('event-log');
@@ -136,7 +135,6 @@
     return d.toLocaleTimeString('ru-RU', { hour12: false });
   }
 
-  /* ---------- превращаем событие GitHub в короткую строку ---------- */
 
   function describe(e) {
     const p = e.payload || {};
@@ -170,7 +168,6 @@
     }
   }
 
-  /* Подряд идущие push в один репозиторий склеиваем в одну строку */
   function collapse(events) {
     const out = [];
     for (const e of events) {
@@ -181,7 +178,7 @@
       ) {
         const a = prev.payload.size ?? (prev.payload.commits ? prev.payload.commits.length : 1);
         const b = e.payload.size ?? (e.payload.commits ? e.payload.commits.length : 1);
-        prev = Object.assign(prev, { payload: { size: a + b } });
+        prev.payload = { size: a + b };
         continue;
       }
       out.push({ ...e, payload: { ...e.payload } });
@@ -276,10 +273,17 @@
     setStatus('* загрузка…');
 
     try {
-      const res = await fetch(
-        `https://api.github.com/users/${USER}/events/public?per_page=60`,
-        { headers: { Accept: 'application/vnd.github+json' } }
-      );
+      const ctrl  = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 8000);
+      let res;
+      try {
+        res = await fetch(
+          `https://api.github.com/users/${USER}/events/public?per_page=60`,
+          { headers: { Accept: 'application/vnd.github+json' }, signal: ctrl.signal }
+        );
+      } finally {
+        clearTimeout(timer);
+      }
 
       if (res.status === 403 || res.status === 429) {
         throw new Error('лимит запросов GitHub API исчерпан, попробуй позже');
@@ -291,12 +295,13 @@
       render(collapse(events));
       setStatus('* журнал обновлён ' + clock());
     } catch (err) {
+      const msg = err.name === 'AbortError' ? 'GitHub не ответил за 8 секунд' : err.message;
       if (cached) {
-        render(collapse(cached.events));
-        setStatus('! ' + err.message + ' (показаны сохранённые данные от ' + clock(new Date(cached.t)) + ')', true);
+        try { render(collapse(cached.events)); } catch (_) { list.textContent = ''; }
+        setStatus('! ' + msg + ' (показаны сохранённые данные от ' + clock(new Date(cached.t)) + ')', true);
       } else {
         list.textContent = '';
-        setStatus('! не удалось загрузить журнал: ' + err.message, true);
+        setStatus('! не удалось загрузить журнал: ' + msg, true);
       }
     }
   }
