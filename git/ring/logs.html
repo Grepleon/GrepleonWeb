@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>event-log — демо</title>
+<style>
+  /* Только для демо при открытии файла отдельно. На своей странице не нужно. */
+  html, body { margin: 0; background: #021a0a; color: #2dff6e; font-family: "JetBrains Mono", "Fira Code", Consolas, monospace; }
+  .demo-wrap { max-width: 725px; margin: 40px auto; padding: 0 16px; }
+</style>
+</head>
+<body>
+<div class="demo-wrap">
+
+<style>
+  #event-log {
+    /* Подгони под свои цвета */
+    --el-bright: #3dff7a;          /* основной яркий зелёный */
+    --el-text:   #2bd965;          /* текст строк */
+    --el-dim:    #1f9a4a;          /* время, второстепенное */
+    --el-border: #17703a;          /* рамка карточки */
+    --el-bg:     rgba(2, 40, 16, .55);
+    --el-warn:   #ffb454;          /* только для ошибок */
+
+    font-family: inherit;          /* берём шрифт страницы */
+    border: 1px solid var(--el-border);
+    border-radius: 8px;
+    background: var(--el-bg);
+    padding: 14px 18px 12px;
+    color: var(--el-text);
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  #event-log .el-head {
+    margin: 0 0 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--el-border);
+    color: var(--el-bright);
+    font-size: 14px;
+    font-weight: 700;
+  }
+  #event-log .el-head span { color: var(--el-dim); font-weight: 400; }
+
+  #event-log .el-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  #event-log .el-list li {
+    display: flex;
+    gap: .7ch;
+    overflow-wrap: anywhere;
+    animation: el-print .01s linear both;
+    animation-delay: calc(var(--i, 0) * 70ms);
+  }
+  #event-log .el-prompt { color: var(--el-dim); flex: none; }
+  #event-log .el-msg b  { color: var(--el-bright); font-weight: 700; }
+  #event-log .el-time   { color: var(--el-dim); white-space: nowrap; }
+
+  #event-log a {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px dotted var(--el-dim);
+  }
+  #event-log a:hover,
+  #event-log a:focus-visible { color: var(--el-bright); border-bottom-color: var(--el-bright); outline: none; }
+
+  #event-log .el-status {
+    margin: 10px 0 0;
+    font-size: 13px;
+    color: var(--el-dim);
+  }
+  #event-log .el-status.is-error { color: var(--el-warn); }
+
+  #event-log .el-cursor {
+    display: inline-block;
+    width: .6ch;
+    height: 1.05em;
+    margin-left: .4ch;
+    vertical-align: text-bottom;
+    background: var(--el-bright);
+    animation: el-blink 1.1s steps(1) infinite;
+  }
+
+  /* Строки «печатаются» по одной при загрузке: единственное движение в блоке */
+  @keyframes el-print {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes el-blink {
+    50% { opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #event-log .el-list li { animation: none; }
+    #event-log .el-cursor  { animation: none; }
+  }
+</style>
+
+<section id="event-log" aria-label="Последние события на GitHub">
+  <p class="el-head">$ tail -f github/events.log <span>— Grepleon</span></p>
+  <ul class="el-list" aria-live="polite"></ul>
+  <p class="el-status">* загрузка…<span class="el-cursor" aria-hidden="true"></span></p>
+</section>
+
+<script>
+(() => {
+  const USER     = 'Grepleon';
+  const LIMIT    = 12;                    // сколько строк показывать
+  const CACHE_MS = 5 * 60 * 1000;         // GitHub без токена даёт 60 запросов/час на IP
+  const CACHE_KEY = 'eventlog:' + USER;
+
+  const root   = document.getElementById('event-log');
+  const list   = root.querySelector('.el-list');
+  const status = root.querySelector('.el-status');
+
+  /* ---------- вспомогательное ---------- */
+
+  const num = (n) => (n ? '#' + n : '');
+
+  function ago(iso) {
+    const s = Math.max(0, (Date.now() - new Date(iso).getTime()) / 1000);
+    if (s < 60) return 'только что';
+    const m = s / 60;
+    if (m < 60) return Math.floor(m) + ' мин назад';
+    const h = m / 60;
+    if (h < 24) return Math.floor(h) + ' ч назад';
+    const d = h / 24;
+    if (d < 30) return Math.floor(d) + ' дн назад';
+    return new Date(iso).toLocaleDateString('ru-RU');
+  }
+
+  function clock(d = new Date()) {
+    return d.toLocaleTimeString('ru-RU', { hour12: false });
+  }
+
+  /* ---------- превращаем событие GitHub в короткую строку ---------- */
+
+  function describe(e) {
+    const p = e.payload || {};
+    switch (e.type) {
+      case 'PushEvent': {
+        const n = p.size ?? (p.commits ? p.commits.length : 0);
+        return n > 1 ? `push ×${n}` : 'push';
+      }
+      case 'PullRequestEvent': {
+        const pr  = p.pull_request || {};
+        const act = p.action === 'closed' && pr.merged ? 'merged' : p.action;
+        return `PR ${num(p.number || pr.number)} ${act || ''}`.trim();
+      }
+      case 'PullRequestReviewEvent':
+        return `review PR ${num(p.pull_request && p.pull_request.number)}`.trim();
+      case 'PullRequestReviewCommentEvent':
+        return `comment PR ${num(p.pull_request && p.pull_request.number)}`.trim();
+      case 'IssuesEvent':
+        return `issue ${num(p.issue && p.issue.number)} ${p.action || ''}`.replace(/\s+/g, ' ').trim();
+      case 'IssueCommentEvent':
+        return `comment ${num(p.issue && p.issue.number)}`.trim();
+      case 'CreateEvent':
+        return `create ${p.ref_type || ''} ${p.ref || ''}`.replace(/\s+/g, ' ').trim();
+      case 'DeleteEvent':
+        return `delete ${p.ref_type || ''} ${p.ref || ''}`.replace(/\s+/g, ' ').trim();
+      case 'WatchEvent':   return 'star';
+      case 'ForkEvent':    return 'fork';
+      case 'PublicEvent':  return 'repo → public';
+      case 'ReleaseEvent': return `release ${(p.release && p.release.tag_name) || ''}`.trim();
+      default:             return e.type.replace(/Event$/, '').toLowerCase();
+    }
+  }
+
+  /* Подряд идущие push в один репозиторий склеиваем в одну строку */
+  function collapse(events) {
+    const out = [];
+    for (const e of events) {
+      const prev = out[out.length - 1];
+      if (
+        prev && e.type === 'PushEvent' && prev.type === 'PushEvent' &&
+        prev.repo.name === e.repo.name
+      ) {
+        const a = prev.payload.size ?? (prev.payload.commits ? prev.payload.commits.length : 1);
+        const b = e.payload.size ?? (e.payload.commits ? e.payload.commits.length : 1);
+        prev = Object.assign(prev, { payload: { size: a + b } });
+        continue;
+      }
+      out.push({ ...e, payload: { ...e.payload } });
+    }
+    return out;
+  }
+
+  /* ---------- отрисовка (без innerHTML: данные API не вставляются как HTML) ---------- */
+
+  function render(events) {
+    list.textContent = '';
+
+    if (!events.length) {
+      const li = document.createElement('li');
+      li.innerHTML = '<span class="el-prompt">&gt;</span><span class="el-msg">публичных событий пока нет</span>';
+      list.appendChild(li);
+      return;
+    }
+
+    events.slice(0, LIMIT).forEach((e, i) => {
+      const li = document.createElement('li');
+      li.style.setProperty('--i', i);
+
+      const prompt = document.createElement('span');
+      prompt.className = 'el-prompt';
+      prompt.textContent = '>';
+
+      const msg = document.createElement('span');
+      msg.className = 'el-msg';
+
+      const label = document.createElement('b');
+      label.textContent = describe(e);
+
+      const arrow = document.createTextNode(' → ');
+
+      const repoShort = e.repo.name.startsWith(USER + '/')
+        ? e.repo.name.slice(USER.length + 1)
+        : e.repo.name;
+      const link = document.createElement('a');
+      link.href = 'https://github.com/' + e.repo.name;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.textContent = repoShort;
+
+      msg.append(label, arrow, link);
+
+      const time = document.createElement('time');
+      time.className = 'el-time';
+      time.dateTime = e.created_at;
+      time.title = new Date(e.created_at).toLocaleString('ru-RU');
+      time.textContent = '· ' + ago(e.created_at);
+
+      li.append(prompt, msg, time);
+      list.appendChild(li);
+    });
+  }
+
+  function setStatus(text, isError) {
+    status.className = 'el-status' + (isError ? ' is-error' : '');
+    status.textContent = text;
+    const cur = document.createElement('span');
+    cur.className = 'el-cursor';
+    cur.setAttribute('aria-hidden', 'true');
+    status.appendChild(cur);
+  }
+
+  /* ---------- кэш ---------- */
+
+  function readCache() {
+    try {
+      const raw = localStorage.getItem(CACHE_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch (_) { return null; }
+  }
+  function writeCache(events) {
+    try {
+      localStorage.setItem(CACHE_KEY, JSON.stringify({ t: Date.now(), events }));
+    } catch (_) { /* приватный режим или переполнение: просто без кэша */ }
+  }
+
+  /* ---------- загрузка ---------- */
+
+  async function load(force = false) {
+    const cached = readCache();
+
+    if (!force && cached && Date.now() - cached.t < CACHE_MS) {
+      render(collapse(cached.events));
+      setStatus('* журнал обновлён ' + clock(new Date(cached.t)));
+      return;
+    }
+
+    setStatus('* загрузка…');
+
+    try {
+      const res = await fetch(
+        `https://api.github.com/users/${USER}/events/public?per_page=60`,
+        { headers: { Accept: 'application/vnd.github+json' } }
+      );
+
+      if (res.status === 403 || res.status === 429) {
+        throw new Error('лимит запросов GitHub API исчерпан, попробуй позже');
+      }
+      if (!res.ok) throw new Error('GitHub ответил ' + res.status);
+
+      const events = await res.json();
+      writeCache(events);
+      render(collapse(events));
+      setStatus('* журнал обновлён ' + clock());
+    } catch (err) {
+      if (cached) {
+        render(collapse(cached.events));
+        setStatus('! ' + err.message + ' (показаны сохранённые данные от ' + clock(new Date(cached.t)) + ')', true);
+      } else {
+        list.textContent = '';
+        setStatus('! не удалось загрузить журнал: ' + err.message, true);
+      }
+    }
+  }
+
+  // Чтобы обновлять из твоей кнопки «Обновить статистику»:
+  //   window.refreshEventLog();
+  window.refreshEventLog = () => load(true);
+
+  load();
+})();
+</script>
+
+</div>
+</body>
+</html>
