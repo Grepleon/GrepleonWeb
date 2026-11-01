@@ -9,6 +9,7 @@
     --el-border: #17703a;          /* рамка карточки */
     --el-bg:     rgba(2, 40, 16, .55);
     --el-warn:   #ffb454;          /* только для ошибок */
+    --el-max-h:  30rem;            /* высота списка; дальше он прокручивается внутри */
 
     font-family: inherit;          /* берём шрифт страницы */
     border: 1px solid var(--el-border);
@@ -30,7 +31,16 @@
   }
   #event-log .el-head span { color: var(--el-dim); font-weight: 400; }
 
-  #event-log .el-list { list-style: none; margin: 0; padding: 0; }
+  #event-log .el-list {
+    list-style: none;
+    margin: 0 -6px;                /* отступ 6px нужен, чтобы подсветка строк не обрезалась */
+    padding: 0 6px;
+    max-height: var(--el-max-h);
+    overflow-y: auto;
+    overscroll-behavior: contain;  /* прокрутка списка не тянет за собой страницу */
+    scrollbar-width: thin;
+    scrollbar-color: var(--el-dim) transparent;
+  }
 
   #event-log .el-list > li {
     animation: el-print .01s linear both;

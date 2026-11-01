@@ -8,6 +8,8 @@
   const MAX_FILES   = 6;                  // файлов в раскрытом push
   const MAX_REFS    = 3;                  // веток в одном склеенном push
 
+  const reduceMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
   const root   = document.getElementById('event-log');
   const list   = root.querySelector('.el-list');
   const status = root.querySelector('.el-status');
@@ -274,8 +276,7 @@
 
     switch (item.type) {
       case 'PushEvent': {
-        fillPush(item, box.appendChild(el('div')));
-        break;
+        return fillPush(item, box.appendChild(el('div')));
       }
       case 'PullRequestEvent': {
         const pr = p.pull_request || {};
@@ -387,10 +388,13 @@
         const open = row.getAttribute('aria-expanded') !== 'true';
         row.setAttribute('aria-expanded', String(open));
         box.hidden = !open;
+        // раскрытую часть подводим в видимую область списка (и ещё раз, когда подгрузятся коммиты)
+        const reveal = () => box.scrollIntoView({ block: 'nearest', behavior: reduceMotion ? 'auto' : 'smooth' });
         if (open && !box.dataset.ready) {      // детали строим один раз, при первом раскрытии
           box.dataset.ready = '1';
-          buildDetails(item, box);
+          Promise.resolve(buildDetails(item, box)).then(reveal);
         }
+        if (open) reveal();
       });
 
       li.append(row, box);
@@ -453,9 +457,11 @@
     }
   }
 
-
+  // Чтобы обновлять из твоей кнопки «Обновить статистику»:
+  //   window.refreshEventLog();
   window.refreshEventLog = () => load(true);
 
+  // Кнопка «Обновить статистику» обновляет и журнал событий
   const refreshBtn = document.getElementById('github-refresh');
   if (refreshBtn) refreshBtn.addEventListener('click', () => load(true));
 
