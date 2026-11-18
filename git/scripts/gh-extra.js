@@ -7,7 +7,7 @@
 
     const USER = "Grepleon";
     const API = "https://api.github.com";
-    const CACHE_KEY = "gh_extra_v3";
+    const CACHE_KEY = "gh_extra_v4";
     const CACHE_TTL = 30 * 60 * 1000;   // 30 минут
     const FORCE_COOLDOWN = 60 * 1000;   // принудительное обновление не чаще раза в минуту
 
@@ -49,13 +49,15 @@
     }
 
     async function collect() {
-        const [user, repos, memberRepos, prs, issues, reviewed] = await Promise.all([
+        const [user, repos, memberRepos, prs, issues, reviewed, issuesIn] = await Promise.all([
             getJSON(API + "/users/" + USER),
             getJSON(API + "/users/" + USER + "/repos?per_page=100"),
             getJSON(API + "/users/" + USER + "/repos?type=member&per_page=100"),
             searchCount("author:" + USER + " type:pr"),
             searchCount("author:" + USER + " type:issue"),
             searchCount("reviewed-by:" + USER + " -author:" + USER + " type:pr"),
+            // issues, которые написали мне: в моих репозиториях, автор не я
+            searchCount("user:" + USER + " type:issue -author:" + USER),
         ]);
 
         const own = repos.filter((r) => !r.fork);
@@ -89,7 +91,8 @@
             t: Date.now(),
             prs: prs.total_count,
             reviews: reviewed.total_count,
-            issues: issues.total_count,
+            // сначала сколько написали мне, потом через / сколько написал я
+            issues: issuesIn.total_count + " / " + issues.total_count,
             stars: own.reduce((s, r) => s + r.stargazers_count, 0),
             forks: own.reduce((s, r) => s + r.forks_count, 0),
             followers: user.followers,
