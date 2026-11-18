@@ -88,3 +88,14 @@
         text-indent: 20px;   /* уменьшить красную строку */
     }
 }
+
+
+@media (max-width: 650px) {
+    .languages-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .language-card {
+        padding: 15px;
+    }
+}
