@@ -89,3 +89,4 @@
     .core, .core::before, .ring, .badge, .stars i, .core.hop img { animation: none; }
     .stars, .core img { transition: none; }
 }
+
