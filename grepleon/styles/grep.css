@@ -1,0 +1,13 @@
+.neofetch {
+  display: flex; gap: 40px; justify-content: center; align-items: center;
+  padding: 60px 20px; border-top: 1px solid #1f3a1f;
+  font-family: monospace; flex-wrap: wrap;
+}
+.nf-logo { color: #3f3; margin: 0; line-height: 1.1; }
+.nf-info .k { color: #3f3; font-weight: bold; }
+.nf-info .line { color: #555; }
+.palette { margin-top: 12px; display: flex; gap: 4px; }
+.palette i { width: 22px; height: 14px; display: block; }
+.palette i:nth-child(1){background:#f55} .palette i:nth-child(2){background:#fa5}
+.palette i:nth-child(3){background:#ee5} .palette i:nth-child(4){background:#5e5}
+.palette i:nth-child(5){background:#5ae} .palette i:nth-child(6){background:#a5e}
