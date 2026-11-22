@@ -279,23 +279,30 @@
         </div>
     </div> <!-- конец .page -->
 
-<section class="scene" id="scene" aria-hidden="true">
-    <div class="stars" id="stars"></div>
+<section class="scene" id="scene">
+    <div class="stars" id="stars" aria-hidden="true"></div>
     <div class="core"><img src="res/Grepleon%202026.08%20logo150.png" alt=""></div>
 
     <div class="ring r1">
-        <div class="arm" style="--a:0deg"><span class="badge" style="--c:#5ae">Py</span></div>
-        <div class="arm" style="--a:180deg"><span class="badge" style="--c:#ee5">C</span></div>
+        <div class="arm" style="--a:0deg"><button type="button" class="badge" style="--c:#5ae"
+            data-name="Python" data-text="Основной язык. С него начался мой путь, на нём большинство проектов." data-href="projects/py/index.html">Py</button></div>
+        <div class="arm" style="--a:180deg"><button type="button" class="badge" style="--c:#ee5"
+            data-name="C" data-text="Изучаю. Начал относительно недавно, опыта пока немного." data-href="#languages">C</button></div>
     </div>
     <div class="ring r2">
-        <div class="arm" style="--a:70deg"><span class="badge" style="--c:#a5e">C++</span></div>
-        <div class="arm" style="--a:250deg"><span class="badge" style="--c:#5e5">C#</span></div>
+        <div class="arm" style="--a:70deg"><button type="button" class="badge" style="--c:#a5e"
+            data-name="C++" data-text="Олимпиадное программирование и алгоритмы. Профиль на Codeforces." data-href="projects/cpp/index.html">C++</button></div>
+        <div class="arm" style="--a:250deg"><button type="button" class="badge" style="--c:#5e5"
+            data-name="C#" data-text="Physics Simulator и ConsoleSoft." data-href="projects/cs/index.html">C#</button></div>
     </div>
     <div class="ring r3">
-        <div class="arm" style="--a:20deg"><span class="badge" style="--c:#fa5">JS</span></div>
-        <div class="arm" style="--a:200deg"><span class="badge" style="--c:#f55">HTML</span></div>
+        <div class="arm" style="--a:20deg"><button type="button" class="badge" style="--c:#fa5"
+            data-name="JavaScript" data-text="Вся интерактивность на этом сайте, включая эту сцену." data-href="#languages">JS</button></div>
+        <div class="arm" style="--a:200deg"><button type="button" class="badge" style="--c:#f55"
+            data-name="HTML & CSS" data-text="Основа моих веб-проектов: структура и оформление." data-href="#languages">HTML</button></div>
     </div>
 </section>
+<div class="scene-out" id="scene-out"></div>
 
     <footer class="site-footer">
         <p>© 2026 Grepleon</p>
