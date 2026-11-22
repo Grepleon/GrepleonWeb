@@ -1,13 +1,28 @@
-.neofetch {
-  display: flex; gap: 40px; justify-content: center; align-items: center;
-  padding: 60px 20px; border-top: 1px solid #1f3a1f;
-  font-family: monospace; flex-wrap: wrap;
+.nf { padding: 60px 20px; display: flex; justify-content: center; }
+.nf-window {
+  width: min(760px, 100%);
+  border: 1px solid #1f3a1f; border-radius: 10px; overflow: hidden;
+  background: rgba(0, 12, 0, .6); font-family: monospace;
+  box-shadow: 0 0 40px rgba(51, 255, 51, .06);
 }
-.nf-logo { color: #3f3; margin: 0; line-height: 1.1; }
-.nf-info .k { color: #3f3; font-weight: bold; }
-.nf-info .line { color: #555; }
-.palette { margin-top: 12px; display: flex; gap: 4px; }
-.palette i { width: 22px; height: 14px; display: block; }
+.nf-bar { display: flex; align-items: center; gap: 7px; padding: 10px 14px; background: #0b1a0b; border-bottom: 1px solid #1f3a1f; }
+.nf-bar i { width: 11px; height: 11px; border-radius: 50%; background: #2a4a2a; }
+.nf-bar i:nth-child(1) { background: #f55; }
+.nf-bar i:nth-child(2) { background: #fb5; }
+.nf-bar i:nth-child(3) { background: #5e5; }
+.nf-bar span { margin-left: 10px; color: #6a8a6a; font-size: 13px; }
+.nf-body { padding: 22px 26px 26px; }
+.nf-cmd { color: #cfe; margin-bottom: 20px; }
+.nf-cmd .prompt { color: #3f3; margin-right: 8px; }
+.nf-main { display: flex; gap: 40px; align-items: center; flex-wrap: wrap; }
+.nf-img { width: 150px; height: 150px; object-fit: contain; filter: drop-shadow(0 0 14px rgba(51,255,51,.25)); }
+.nf-info { line-height: 1.9; color: #cfe; }
+.nf-info b { color: #3f3; display: inline-block; min-width: 90px; }
+.nf-title b { min-width: 0; }
+.nf-sep { height: 1px; background: #1f3a1f; margin: 6px 0 8px; }
+.palette { display: flex; gap: 4px; margin-top: 10px; }
+.palette i { width: 22px; height: 12px; }
 .palette i:nth-child(1){background:#f55} .palette i:nth-child(2){background:#fa5}
 .palette i:nth-child(3){background:#ee5} .palette i:nth-child(4){background:#5e5}
 .palette i:nth-child(5){background:#5ae} .palette i:nth-child(6){background:#a5e}
+@media (max-width: 560px) { .nf-main { justify-content: center; } }
