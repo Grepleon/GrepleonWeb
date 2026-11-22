@@ -278,31 +278,15 @@
             </section>
         </div>
     </div>
-    </div> <!-- конец .page -->
-    <section class="nf" id="neofetch">
-      <div class="nf-window">
-        <div class="nf-bar">
-          <i></i><i></i><i></i>
-          <span>user@grepleon: ~</span>
-        </div>
-        <div class="nf-body">
-          <div class="nf-cmd"><span class="prompt">$</span> neofetch</div>
-          <div class="nf-main">
-            <img class="nf-img" src="res/Grepleon%202026.08%20logo150.png" alt="">
-            <div class="nf-info">
-              <div class="nf-title"><b>user</b>@<b>grepleon</b></div>
-              <div class="nf-sep"></div>
-              <div><b>Role</b> Программист</div>
-              <div><b>Langs</b> Python, C++, C#, JS, C</div>
-              <div><b>Projects</b> 5 опубликовано</div>
-              <div><b>Shell</b> GrepleonWeb 1.0</div>
-              <div><b>Uptime</b> <span id="uptime">…</span></div>
-              <div class="palette"><i></i><i></i><i></i><i></i><i></i><i></i></div>
-            </div>
-          </div>
-        </div>
+
+    <section class="orbit" id="orbit">
+      <div class="orbit-head">
+        <span><span class="prompt">$</span> ./orbit --sandbox</span>
+        <span class="orbit-hint">клик: запустить планету <button id="orbit-clear" type="button">[clear]</button></span>
       </div>
+      <canvas id="orbit-canvas"></canvas>
     </section>
+
 
 
 <footer class="site-footer">
